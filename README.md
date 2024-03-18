@@ -47,11 +47,11 @@ Speech Dispatcher would typically come preinstalled in many Linux distributions 
 <div class="font-monospace pt8 bg-light" style="display: flex;">
  <figure>
   <figcaption>With espeak-ng</figcaption>
-  <audio controls="" src="assets/v-espeak.ogg"></audio>
+  <audio controls="" src="./assets/v-espeak.ogg"></audio>
   </figure>
 <figure>
   <figcaption>With Piper</figcaption>
-  <audio controls="" src="assets/v-lessac.ogg"></audio>
+  <audio controls="" src="./assets/v-lessac.ogg"></audio>
   </figure>
 </div>
 
