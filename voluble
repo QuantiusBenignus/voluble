@@ -1,0 +1,61 @@
+#!/usr/bin/zsh
+# Copyright (c) 2024 Quantius Benignus
+# 
+# THE SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#--------------------------------------------------------------------------
+
+# NAME: voluble
+# PREREQUSITES: 
+#  - piper installation (see https://github.com/rhaspi/piper) 
+#  - optionally, a recent version of 'sox' from your system's repositories.
+#  - optionally, a speech dispatcher installation (preinstalled in many distributions)
+#--------------------------------------------------------------------------
+
+#---USER CONFIGURATION BLOCK----------------------------------------------------------------------
+#Please, adjust the variables here to suit your environment:
+#Set to 1 to use sox instead of alsa play (for whatever reason):
+use_sox=0
+#Set to 1 to use speech dispatcher integration of Piper (as per instructions at https://github.com/QuantiusBenignus/voluble):
+use_spd=1
+#If the above is set to 0, piper will be called directly with the voice specified below.
+# Choose the default piper voice (and language) for voluble to use for notifications:
+pvoice="$HOME/Store/Models/piper/en_US-lessac-low.onnx"
+#---END USER CONFIG BLOCK------------------------------------------------------------------------
+
+#---CHECK DEPENDENCIES. This block can be commented out once dependencies confirmed-----------------------------------
+if [ use_sox = 1 ]; then
+ command -v sox &>/dev/null || { echo "sox is required. Please, install sox" >&2 ; exit 1 ; }
+fi
+if [ use_spd = 1 ]; then
+ command -v spd-say &>/dev/null || { echo "You have selected to use speech dispatcher. Please, install it and set up to call piper." >&2 ; exit 1 ; }
+fi
+command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see https://github.com/rhasspy/piper/releases)\
+\nand create 'piper' in your PATH as a symbolic link to the executable, e.g.\n \
+'ln -s /full/path/to/piper/piper \$HOME/.local/bin/piper'" >&2 ; exit 1 ; }
+gnome-extensions list | grep 'voluble' &>/dev/null || { echo "This \
+script is made to work with voluble (GNOME shell extension). Please, install it from https://extensions.gnome.org/extension/6666666" >&2 ; exit 1 ; }
+#---END CHECK DEPENDENCIES. The above block can be commented out after successful 1st run----------------------------
+
+#Decide on sample rate, based on model choice:
+if [ "$pvoice" = "${pvoice%low*}" ]; then
+    srate=22050  # low not found
+else
+    srate=16000  # Substring 'low' found
+fi
+
+# Process command line arguments 
+if [ use_spd = 1 ]; then
+    spd-say -w "$1"
+else 
+    if [ use_sox = 1 ]; then 
+        echo "$1" | piper --model $pvoice --output-raw 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
+    else
+        echo "$1" | piper --model $pvoice --output-raw 2>/dev/null | aplay -r $srate -f S16_LE -t raw - 2>/dev/null 
+    fi
+fi
