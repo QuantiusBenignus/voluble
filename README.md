@@ -53,8 +53,6 @@ With Piper:
 
 https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f
 
-
-  
 - Configuration files are located at /etc/speech-dispatcher/speechd.conf for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
 -  The `spd-conf` tool allows you to modify configuration options interactively.
 - Integration with Synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the preconfigured modules sound unnatural, robotic and not quite intelligible.
@@ -63,7 +61,7 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-
 	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`.
 	3. Then create a suitable `piper.conf` file in `~/.config/speech-dispatcher/modules/`
 	4. The newly created setup can then be tested with `spd-say`, for example:
-`$ spd-say "Your computer can now speak to you nicely"
+`$ spd-say "Your computer can now speak to you nicely`
 - Now all you have to do is set the option in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
 
 ### To-Do
