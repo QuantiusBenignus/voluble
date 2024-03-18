@@ -37,14 +37,14 @@ gnome-extensions enable blurt@quantiusbenignus.local
 
 - Download the helper script voluble for this extension (if not cloned already), place it in your $PATH and make it executable, for example:
 ```
-cd ~/.local/bin && wget voluble  && chmod +x voluble
+cd ~/.local/bin && wget https://github.com/QuantiusBenignus/voluble/blob/main/voluble  && chmod +x voluble
 ```
 That is it, now the extension should work by speaking out-loud in human-like voice all that the computer has to say via notifications.
 
 ### Speech Dispatcher Integration
 Speech Dispatcher is a core accessibility tool designed to facilitate speech synthesis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software synthesizers (programs that convert text into speech).
 Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper withg speech dispatcher:
-<div class="font-monospace pt8 bg-light" style="display: flex;">
+
 With espeak-ng:
 	
 https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3
