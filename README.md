@@ -47,11 +47,11 @@ Speech Dispatcher would typically come preinstalled in many Linux distributions 
 
 With espeak-ng:
 	
-https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3
+<video width="160" height="120" src="https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3"></video>
 
 With Piper: 
 
-https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f
+<video width="160" height="120" src="https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f"></video>
 
 - Configuration files are located at /etc/speech-dispatcher/speechd.conf for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
 -  The `spd-conf` tool allows you to modify configuration options interactively.
