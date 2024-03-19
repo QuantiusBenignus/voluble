@@ -17,7 +17,7 @@
  */
 
 const GETTEXT_DOMAIN = 'voluble-indicator-extension';
-const { GObject, St, Gio } = imports.gi;
+const { GObject, St, Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Main = imports.ui.main;
 const MTray = imports.ui.messageTray;
@@ -26,13 +26,14 @@ const PopupMenu = imports.ui.popupMenu;
 
 const _ = ExtensionUtils.gettext;
 
+
 const Voluble = GObject.registerClass(
 class Voluble extends PanelMenu.Button {
 	_init() {
 		super._init(0.0, _('Voluble indicator'));
 		this.free = true;
 		this.enabled = true; // Initial state: enabled        
-
+		this.vol_tmp_filepath = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'voluble.tmp']);
 		this.icon1 = new St.Icon({
 			icon_name: 'audio-volume-overamplified-symbolic-rtl',
 			style_class: 'system-status-icon',
@@ -69,7 +70,6 @@ class Voluble extends PanelMenu.Button {
 		this.enabled = !this.enabled;
 		// Update menu item label
 		this.itemED.label.text = _(this.enabled ? '🐧 Mute TTS' : '🐧 Unmute TTS');
-//		this.icon1.set_icon_name(this.enabled ? 'org.gnome.Settings-sound-symbolic' : 'lang-variable-symbolic'); 
 		this.icon1.set_icon_name(this.enabled ? 'audio-volume-overamplified-symbolic-rtl' : 'audio-volume-muted-symbolic-rtl'); 
 		// Perform any other actions based on extension state
 		if (this.enabled) {
@@ -88,12 +88,22 @@ class Voluble extends PanelMenu.Button {
 	if (this.free) {
 		try {
 			this.free = false;
-			const proc = Gio.Subprocess.new(['voluble',title+' '+description],
-				Gio.SubprocessFlags.NONE);
-			const success = proc.wait_check_async(null, () => {this.free = true;});
+			const file = Gio.File.new_for_path(this.vol_tmp_filepath);
+			const textenc = new TextEncoder();
+			const bytes = textenc.encode(title+' '+description);
+			const [ok, etag] = file.replace_contents(bytes, null, false,
+				Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+			if (ok) {
+				try {
+					const proc = Gio.Subprocess.new(['voluble'],Gio.SubprocessFlags.NONE);
+					const success = proc.wait_check_async(null, () => {this.free = true;});
+				} catch (e) {
+					logError(e, 'Error spawning voluble!');
+					this.free = true;
+				}
+				}
 		} catch (e) {
-			logError(e);
-			this.free = true;
+			logError(e, 'I/O error!');
 		}
 		}
 	}
