@@ -25,7 +25,7 @@ use_sox=0
 use_spd=1
 #If the above is set to 0, piper will be called directly with the voice specified below.
 # Choose the default piper voice (and language) for voluble to use for notifications:
-pvoice="$HOME/Store/Models/piper/en_US-lessac-low.onnx"
+pvoice="$HOME/PATH_TO_YOUR_Piper_VOICES/en_US-lessac-low.onnx"
 #---END USER CONFIG BLOCK------------------------------------------------------------------------
 
 #---CHECK DEPENDENCIES. This block can be commented out once dependencies confirmed-----------------------------------
@@ -49,13 +49,23 @@ else
     srate=16000  # Substring 'low' found
 fi
 
-# Process command line arguments 
+if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
+    data=$(cat "$XDG_RUNTIME_DIR/voluble.tmp")
+
+elif [ $# -gt 0 ]; then
+    # multiple arguments are ignored
+    # data="$1"
+    data="This script is made to work only with the Voluble GNOME shell extension" 
+else
+    data="All dependencies are satisfied. I have nothing else to say!"
+fi
+# Process data 
 if [ use_spd = 1 ]; then
-    spd-say -w "$1"
+    spd-say -w "$data"
 else 
     if [ use_sox = 1 ]; then 
-        echo "$1" | piper --model $pvoice --output-raw 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
+        echo "$data" | piper --model $pvoice --output-raw 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
     else
-        echo "$1" | piper --model $pvoice --output-raw 2>/dev/null | aplay -r $srate -f S16_LE -t raw - 2>/dev/null 
+        echo "$data" | piper --model $pvoice --output-raw 2>/dev/null | aplay -r $srate -f S16_LE -t raw - 2>/dev/null 
     fi
 fi
