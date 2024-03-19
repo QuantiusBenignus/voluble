@@ -44,7 +44,7 @@ cd ~/.local/bin && wget https://github.com/QuantiusBenignus/voluble/blob/main/vo
 That is it, now the extension should work by speaking out-loud in human-like voice all that the computer has to say via notifications.
 
 ### Speech Dispatcher Integration
-Speech Dispatcher is a core accessibility tool designed to facilitate speech synthesis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software synthesizers (programs that convert text into speech).
+Speech Dispatcher is a core accessibility tool designed to facilitate speech esis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software esizers (programs that convert text into speech).
 Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper withg speech dispatcher:
 
 With espeak-ng:
@@ -57,7 +57,7 @@ With Piper:
 
 - Configuration files are located at /etc/speech-dispatcher/speechd.conf for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
 -  The `spd-conf` tool allows you to modify configuration options interactively or create per-user speech dispatcher configuration.
-- Integration with Synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the preconfigured modules sound unnatural, robotic and not quite intelligible.
+- Integration with synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the preconfigured modules sound unnatural, robotic and not quite intelligible.
 - It is possible with some work to configure Piper to work with Speech Dispatcher.
 	1. First create a generic local (per user) setup with the `spd-conf` tool.
  	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
@@ -123,6 +123,6 @@ With Piper:
 
 ### Credits
 
-- Michael Hansen for making PIper a relatively low-resource, good-quality speech synthesizer.
+- Michael Hansen for making Piper a low-resource, good-quality speech synthesizer.
 - The maintainers of the GNOME project.
 
