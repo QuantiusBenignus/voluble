@@ -1,4 +1,4 @@
-# <img src="assets/voluble.png" height="48px" width="48px"> Voluble - Let your GNOME desktop speak to you.</img>
+# <img src="assets/voluble.png" height="56px" width="56px"> Voluble - let your GNOME desktop speak to you.</img>
 
 Voluble is a simple GNOME shell extension that brings a natural-sounding, human-like voice to the desktop notifications used to alert the GNOME user of desktop events, appointments, e-mails, etc. Here is an example video:
 
