@@ -84,6 +84,7 @@ With Piper:
 ```
 
 	3. Then create a suitable `piper.conf` file in `~/.config/speech-dispatcher/modules/`. Here is an example `piper.conf` [adapted for my case from here](https://github.com/brailcom/speechd/issues/866#issuecomment-1869106771):
+ 
 ```
 Debug 0
 
@@ -114,6 +115,7 @@ AddVoice        "en"    "MALE2"         "en_GB-alan-low.onnx"
 DefaultVoice    "en_US-lessac-low.onnx"
 
 ```
+
 	4. The newly created setup can then be tested with `spd-say`, for example:
 `$ spd-say "Your computer can now speak to you nicely`
 - Now all you have to do is set the option in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
