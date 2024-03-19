@@ -27,12 +27,8 @@ If instead, we do not want to go rogue and prefer to play nice with the system l
 	
 	-- or manually, by clonning the code from github:
 ```
-git clone https://github.com/QuantiusBenignus/voluble
-
-cd voluble
-
-unzip voluble@quantiousbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/
-
+git clone https://github.com/QuantiusBenignus/voluble && cd voluble && \
+unzip voluble@quantiusbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/ && \
 gnome-extensions enable voluble@quantiusbenignus.local
 
 ```
