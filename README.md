@@ -28,9 +28,12 @@ If instead, we do not want to go rogue and prefer to play nice with the system l
 	-- or manually, by clonning the code from github:
 ```
 git clone https://github.com/QuantiusBenignus/voluble
+
 cd voluble
-unzip blurt@quantiousbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/
-gnome-extensions enable blurt@quantiusbenignus.local
+
+unzip voluble@quantiousbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/
+
+gnome-extensions enable voluble@quantiusbenignus.local
 
 ```
 
@@ -53,12 +56,64 @@ With Piper:
 <video width="160" height="120" src="https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f"></video>
 
 - Configuration files are located at /etc/speech-dispatcher/speechd.conf for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
--  The `spd-conf` tool allows you to modify configuration options interactively.
+-  The `spd-conf` tool allows you to modify configuration options interactively or create per-user speech dispatcher configuration.
 - Integration with Synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the preconfigured modules sound unnatural, robotic and not quite intelligible.
 - It is possible with some work to configure Piper to work with Speech Dispatcher.
 	1. First create a generic local (per user) setup with the `spd-conf` tool.
-	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`.
-	3. Then create a suitable `piper.conf` file in `~/.config/speech-dispatcher/modules/`
+ 	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
+```
+ # The Default language with which to speak
+ # Note that the spd-say client in particular always sets the language to its
+ # current locale language, so this particular client will never pick this configuration.
+ 
+ DefaultLanguage   en-US
+ 
+ # Pulse audio is the default and recommended sound server. OSS and ALSA
+ # are only provided for compatibility with architectures that do not
+ # include Pulse Audio. 
+ 
+ AudioOutputMethod   pulse
+ 
+ # The next ones are instrumental
+ 
+ AddModule "piper"              "sd_generic"   "piper.conf"
+ DefaultModule piper
+ LanguageDefaultModule "en"  "piper"
+ LanguageDefaultModule "fr"  "piper"
+ 
+```
+
+	3. Then create a suitable `piper.conf` file in `~/.config/speech-dispatcher/modules/`. Here is an example `piper.conf` [adapted for my case from here](https://github.com/brailcom/speechd/issues/866#issuecomment-1869106771):
+```
+Debug 0
+
+GenericExecuteSynth "printf %s \'$DATA\' | piper --length_scale 1 --sentence_silence 0 --model ~/Store/Models/piper/$VOICE --output-raw | aplay -r 16000 -f S16_LE -t raw -"
+# Using low quality voices to respect the 16000 rate for aplay in the command above is perfectly fine.
+
+GenericCmdDependency "piper"
+GenericCmdDependency "aplay"
+GenericCmdDependency "printf"
+GenericSoundIconFolder "/usr/share/sounds/sound-icons/"
+
+GenericPunctNone ""
+GenericPunctSome "--punct=\"()<>[]{}\""
+GenericPunctMost "--punct=\"()[]{};:\""
+GenericPunctAll "--punct"
+
+#GenericStripPunctChars  ""
+
+GenericLanguage  "en" "en_US" "utf-8"
+GenericLanguage  "en" "en_GB" "utf-8"
+GenericLanguage  "fr" "fr_FR" "utf-8"
+
+AddVoice        "en"    "MALE1"         "en_US-lessac-low.onnx"
+AddVoice        "en"    "FEMALE1"       "en_US-amy-low.onnx"
+AddVoice        "fr"    "MALE1"         "fr_FR-gilles-low.onnx"
+AddVoice        "en"    "MALE2"         "en_GB-alan-low.onnx"
+
+DefaultVoice    "en_US-lessac-low.onnx"
+
+```
 	4. The newly created setup can then be tested with `spd-say`, for example:
 `$ spd-say "Your computer can now speak to you nicely`
 - Now all you have to do is set the option in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
