@@ -45,15 +45,11 @@ That is it, now the extension should work by speaking out-loud in human-like voi
 
 ### Speech Dispatcher Integration
 Speech Dispatcher is a core accessibility tool designed to facilitate speech esis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software esizers (programs that convert text into speech).
-Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper withg speech dispatcher:
+Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper with speech dispatcher:
 
-With espeak-ng:
-	
-<video width="160" height="120" src="https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3"></video>
-
-With Piper: 
-
-<video width="160" height="120" src="https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f"></video>
+With espeak-ng | With Piper 
+:-: | :-:
+<video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3" width=160/> | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f" width=160/>
 
 - Configuration files are located at /etc/speech-dispatcher/speechd.conf for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
 -  The `spd-conf` tool allows you to modify configuration options interactively or create per-user speech dispatcher configuration.
