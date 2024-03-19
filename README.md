@@ -61,64 +61,61 @@ With Piper:
 - It is possible with some work to configure Piper to work with Speech Dispatcher.
 	1. First create a generic local (per user) setup with the `spd-conf` tool.
  	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
-```
- # The Default language with which to speak
- # Note that the spd-say client in particular always sets the language to its
- # current locale language, so this particular client will never pick this configuration.
+     
+	```
+ 		# The Default language with which to speak
+ 		# Note that the spd-say client in particular always sets the language to its
+ 		# current locale language, so this particular client will never pick this configuration.
+ 		
+ 		DefaultLanguage   en-US
+		 
+ 		# Pulse audio is the default and recommended sound server. OSS and ALSA
+ 		# are only provided for compatibility with architectures that do not
+ 		# include Pulse Audio. 
  
- DefaultLanguage   en-US
+ 		AudioOutputMethod   alsa
  
- # Pulse audio is the default and recommended sound server. OSS and ALSA
- # are only provided for compatibility with architectures that do not
- # include Pulse Audio. 
- 
- AudioOutputMethod   pulse
- 
- # The next ones are instrumental
- 
- AddModule "piper"              "sd_generic"   "piper.conf"
- DefaultModule piper
- LanguageDefaultModule "en"  "piper"
- LanguageDefaultModule "fr"  "piper"
- 
-```
+ 		# The next ones are instrumental, find them in their respective sections
+ 		
+ 		AddModule "piper"              "sd_generic"   "piper.conf"
+ 		DefaultModule piper
+ 		LanguageDefaultModule "en"  "piper"
+ 		LanguageDefaultModule "fr"  "piper"
+	```
 
 	3. Then create a suitable `piper.conf` file in `~/.config/speech-dispatcher/modules/`. Here is an example `piper.conf` [adapted for my case from here](https://github.com/brailcom/speechd/issues/866#issuecomment-1869106771):
  
-```
-Debug 0
+	```
+		Debug 0
+		GenericExecuteSynth "printf %s \'$DATA\' | piper --length_scale 1 --sentence_silence 0 --model ~/Store/Models/piper/$VOICE --output-raw | aplay -r 16000 -f S16_LE -t raw -"
+		# Using low quality voices to respect the 16000 rate for aplay in the command above is perfectly fine.
+		
+		GenericCmdDependency "piper"
+		GenericCmdDependency "aplay"
+		GenericCmdDependency "printf"
+		GenericSoundIconFolder "/usr/share/sounds/sound-icons/"
+		GenericPunctNone ""
+		GenericPunctSome "--punct=\"()<>[]{}\""
+		GenericPunctMost "--punct=\"()[]{};:\""
+		GenericPunctAll "--punct"
+		
+		#GenericStripPunctChars  ""
 
-GenericExecuteSynth "printf %s \'$DATA\' | piper --length_scale 1 --sentence_silence 0 --model ~/Store/Models/piper/$VOICE --output-raw | aplay -r 16000 -f S16_LE -t raw -"
-# Using low quality voices to respect the 16000 rate for aplay in the command above is perfectly fine.
-
-GenericCmdDependency "piper"
-GenericCmdDependency "aplay"
-GenericCmdDependency "printf"
-GenericSoundIconFolder "/usr/share/sounds/sound-icons/"
-
-GenericPunctNone ""
-GenericPunctSome "--punct=\"()<>[]{}\""
-GenericPunctMost "--punct=\"()[]{};:\""
-GenericPunctAll "--punct"
-
-#GenericStripPunctChars  ""
-
-GenericLanguage  "en" "en_US" "utf-8"
-GenericLanguage  "en" "en_GB" "utf-8"
-GenericLanguage  "fr" "fr_FR" "utf-8"
-
-AddVoice        "en"    "MALE1"         "en_US-lessac-low.onnx"
-AddVoice        "en"    "FEMALE1"       "en_US-amy-low.onnx"
-AddVoice        "fr"    "MALE1"         "fr_FR-gilles-low.onnx"
-AddVoice        "en"    "MALE2"         "en_GB-alan-low.onnx"
-
-DefaultVoice    "en_US-lessac-low.onnx"
-
-```
+		GenericLanguage  "en" "en_US" "utf-8"
+		GenericLanguage  "en" "en_GB" "utf-8"
+		GenericLanguage  "fr" "fr_FR" "utf-8"
+		
+		AddVoice        "en"    "MALE1"         "en_US-lessac-low.onnx"
+		AddVoice        "en"    "FEMALE1"       "en_US-amy-low.onnx"
+		AddVoice        "fr"    "MALE1"         "fr_FR-gilles-low.onnx"
+		AddVoice        "en"    "MALE2"         "en_GB-alan-low.onnx"
+		
+		DefaultVoice    "en_US-lessac-low.onnx"
+	```
 
 	4. The newly created setup can then be tested with `spd-say`, for example:
-`$ spd-say "Your computer can now speak to you nicely`
-- Now all you have to do is set the option in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
+		`$ spd-say "Your computer can now speak to you nicely`
+- Now all you have to do is set the option `use_spd=1` in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
 
 ### To-Do
 
