@@ -51,7 +51,7 @@ With espeak-ng | With Piper
 -  The `spd-conf` tool allows you to modify configuration options interactively or create per-user speech dispatcher configuration.
 - Integration with synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the preconfigured modules sound unnatural, robotic and not quite intelligible.
 - It is possible with some work to configure Piper to work with Speech Dispatcher.
-	1. First create a generic local (per user) setup with the `spd-conf` tool.
+	1. First create a generic local (per user) setup with the `spd-conf` tool, using `sd_generic` as the default module.
  	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
      
 	```
