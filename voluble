@@ -39,7 +39,7 @@ command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see
 \nand create 'piper' in your PATH as a symbolic link to the executable, e.g.\n \
 'ln -s /full/path/to/piper/piper \$HOME/.local/bin/piper'" >&2 ; exit 1 ; }
 gnome-extensions list | grep 'voluble' &>/dev/null || { echo "This \
-script is made to work with voluble (GNOME shell extension). Please, install it from https://extensions.gnome.org/extension/9999/voluble/" >&2 ; exit 1 ; }
+script is made to work with voluble (GNOME shell extension). Please, install it from https://extensions.gnome.org/extension/6849/voluble/" >&2 ; exit 1 ; }
 #---END CHECK DEPENDENCIES. The above block can be commented out after successful 1st run----------------------------
 
 #Decide on sample rate, based on model choice:
