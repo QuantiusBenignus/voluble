@@ -31,8 +31,8 @@ const Voluble = GObject.registerClass(
 class Voluble extends PanelMenu.Button {
 	_init() {
 		super._init(0.0, _('Voluble indicator'));
-		this.free = true;
-		this.enabled = true; // Initial state: enabled        
+		this.free = true; //Flag to lock only the voluble thread while speaking
+		this.enabled = true; // Flag to keep track of Muted/Unmuted state
 		this.vol_tmp_filepath = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'voluble.tmp']);
 		this.icon1 = new St.Icon({
 			icon_name: 'audio-volume-overamplified-symbolic-rtl',
@@ -50,7 +50,7 @@ class Voluble extends PanelMenu.Button {
 			this._notifyVoluble(_('About Voluble.'), _('Voluble announces your desktop notifications out-loud. \n You can find more details and leave feedback on GitHub.'), 'lang-variable-symbolic');
 		});
 		this.menu.addMenuItem(item2);
-/*
+/*  Is this code actually needed (are there persistent/resident sources to track?) 
 		const existingSources = Main.messageTray.getSources();
 		existingSources.forEach((source) => {
 			source.connect('notification-added', (_, notification) => {
@@ -60,7 +60,9 @@ class Voluble extends PanelMenu.Button {
 */
 		Main.messageTray.connect('source-added', (_, source) => {
 			source.connect('notification-added', (_, notification) => {
+			if (this.free && this.enabled) {
 				this._extractNotificationInfo(notification);
+			}
 			});
 		});
 	}
@@ -72,20 +74,12 @@ class Voluble extends PanelMenu.Button {
 		this.itemED.label.text = _(this.enabled ? '🐧 Mute TTS' : '🐧 Unmute TTS');
 		this.icon1.set_icon_name(this.enabled ? 'audio-volume-overamplified-symbolic-rtl' : 'audio-volume-muted-symbolic-rtl'); 
 		// Perform any other actions based on extension state
-		if (this.enabled) {
-			//Unmute TTS - notifications will be read outloud
-			this.free = true;
-		} else {
-			// Mute TTS feature
-			this.free = false;
-		}
 	}
 
 	_extractNotificationInfo(notification) {
-	// Extract title and description from the notification
-	const title = notification.title;
-	const description =  notification.body || notification.bannerBodyText || ' ';
-	if (this.free) {
+		// Extract title and description from the notification
+		const title = notification.title;
+		const description =  notification.body || notification.bannerBodyText || ' ';
 		try {
 			this.free = false;
 			const file = Gio.File.new_for_path(this.vol_tmp_filepath);
@@ -105,11 +99,10 @@ class Voluble extends PanelMenu.Button {
 		} catch (e) {
 			logError(e, 'I/O error!');
 		}
-		}
 	}
 
 	_notifyVoluble(msg, details, icon) {
-		// Create a custom source with your desired icon
+		// Create a custom multiline notification on pressing About
 		let source = new MTray.Source("Voluble Notification", icon);
 		Main.messageTray.add(source);
 		// Create the notification
