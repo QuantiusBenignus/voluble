@@ -10,9 +10,10 @@ Voluble is not an accessibility tool, it does not aim to replace tools like Orca
 
 
 ### Piper
-Unlike the default installation of the afforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher). 
-For a [quick start](#quick-start), we can set up Voluble to use Piper directly, completely ignoring the infrastructure provided by speech dispatcher. 
-If instead, we do not want to go rogue and prefer to play nice with the system logic, it is actually possible to use [speech dispatcher](#speech-dispatcher-integration) to call Piper as a backend synthesizer to speak out-loud the notifications but we need to register Piper as a valid backend module first. The advantage with Piper set as the default speech synthesizer in speech dispatcher is that accessibility tools like Orca will then also sound nice. Just pressing `Super + Alt +S` will start Orca with Piper and we will hear clear human-like voice as we navigate the GNOME GUI. 
+Unlike the default installation of the afforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher).
+We can set up Voluble with Piper in two ways (not mutually exclusive):
+- For a [quick start](#quick-start), we can set up Voluble to use Piper directly, completely ignoring the infrastructure provided by speech dispatcher. 
+- If instead, we do not want to go rogue and prefer to play nice with the system logic, it is actually possible to use [speech dispatcher](#speech-dispatcher-integration) to call Piper as a backend synthesizer to speak out-loud the notifications but we need to register Piper as a valid backend module first. The advantage with Piper set as the default speech synthesizer in speech dispatcher is that accessibility tools like Orca will then also sound nice. Just pressing `Super + Alt +S` will start Orca with Piper and we will hear clear human-like voice as we navigate the GNOME GUI. 
 
 ### Quick Start
 
@@ -39,7 +40,7 @@ cd ~/.local/bin && wget https://github.com/QuantiusBenignus/voluble/blob/main/vo
 ```
 That is it, now the extension should work by speaking out-loud in human-like voice all that the computer has to say via notifications.
 
-### Speech Dispatcher Integration
+### Speech Dispatcher Integration (optional, enhancement)
 Speech Dispatcher is a core accessibility tool designed to facilitate speech synthesis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software speech synthesizers (programs that convert text into speech).
 Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper with speech dispatcher:
 
