@@ -6,7 +6,7 @@ Voluble is a simple GNOME shell extension that brings a natural-sounding, human-
 https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-9219-11b3bc0e5a2d
 
 
-Voluble is not an accessibility tool, it does not mean to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A driving reason for creating this extension has been the ability to hear notifications for appointments and to-do's from the [Joplin note-taking app](https://joplinapp.org).
+Voluble is not an accessibility tool, it does not aim to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A reason for creating this extension has been the desire to hear the contents of notifications for appointments and to-do's from the [Joplin note-taking app](https://joplinapp.org).
 
 
 ### Piper
@@ -20,10 +20,10 @@ If instead, we do not want to go rogue and prefer to play nice with the system l
 - Download the desired voice files (a .onnx and a json file per each voice) for the language(s) of choice. As of this writing, [30 languages](https://github.com/rhasspy/piper?tab=readme-ov-file#voices) are supported. You can listen to samples and download files [here](https://rhasspy.github.io/piper-samples/). Once downloaded, make sure that each .json file is named exactly like its corresponding  .onnx voice file.
 - Make a symbolic link in your $PATH (say, in `~/.local/bin`) to the `piper` executable:
 ```
- ln -s ~/ghcode/piper/piper ~/.local/bin/piper
+ ln -s ~/FOLDER_WITH_EXTRACTED_PIPER/piper ~/.local/bin/piper
 ```
 - Install the Voluble GNOME shell extension 
-	-- either with one click install from the [GNOME extension website](goe).
+	-- either with one click install from the [GNOME extension website](https://extensions.gnome.org/extension/6849/voluble/).
 	
 	-- or manually, by clonning the code from github:
 ```
