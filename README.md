@@ -112,6 +112,7 @@ With espeak-ng | With Piper
 ### To-Do
 
 - [ ] Add automatic translation for the extension GUI
+- [ ] Add extension code for ver. 45+ of the GNOME shell
 
 ### Credits
 
