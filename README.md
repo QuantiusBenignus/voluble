@@ -49,11 +49,11 @@ With espeak-ng | With Piper
 <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/3a84d722-e9ef-4120-afff-0b9224e188a3" width=160/> | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/fea8bce4-9fcc-430d-a4d9-d1a75add8b9f" width=160/>
 
 - Configuration files (speechd.conf) are located in /etc/speech-dispatcher/ for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
--  The `spd-conf` tool allows one to modify configuration options interactively or create per-user speech dispatcher configuration.
+- The `spd-conf` tool allows one to modify configuration options interactively or create per-user speech dispatcher configuration.
 - Integration with synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the supplied preconfigured modules sound unnatural, robotic and not quite intelligible.
 - It is possible, with some work, to configure Piper as a TTS module for Speech Dispatcher.
 	1. First create a generic local (per user) speech-dispatcher setup with the `spd-conf` tool, using `sd_generic` as the default module.
- 	2. Then register Piper as a valid TTS module by editing `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
+ 	2. Then register Piper as a valid TTS module by editing the just-created `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
      
 	```
  		# The Default language with which to speak
@@ -107,7 +107,9 @@ With espeak-ng | With Piper
 	```
 
 	4. The newly created setup can then be tested with `spd-say`, for example:
-		`$ spd-say "Your computer can now speak to you nicely`
+
+		`$ spd-say "Your computer can now speak to you nicely"`
+
 - Now all you have to do is set the option `use_spd=1` in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
 
 ### To-Do
