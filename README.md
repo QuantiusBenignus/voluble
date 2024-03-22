@@ -26,7 +26,7 @@ We can set up Voluble with Piper in two ways (not mutually exclusive):
 - Install the Voluble GNOME shell extension 
 	-- either with one click install from the [GNOME extension website](https://extensions.gnome.org/extension/6849/voluble/).
 	
-	-- or manually, by clonning the code from github:
+	-- or manually, by clonning the code from Github (most up-to-date code):
 ```
 git clone https://github.com/QuantiusBenignus/voluble && cd voluble && \
 unzip voluble@quantiusbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/ && \
@@ -115,6 +115,7 @@ With espeak-ng | With Piper
 ### To-Do
 
 - [ ] Add automatic translation for the extension GUI
+- [x] Make aware of system-wide "Do not Disturb"
 - [ ] Add extension code for ver. 45+ of the GNOME shell
 
 ### Credits
