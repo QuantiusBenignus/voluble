@@ -60,7 +60,7 @@ class Voluble extends PanelMenu.Button {
 */
 		Main.messageTray.connect('source-added', (_, source) => {
 			source.connect('notification-added', (_, notification) => {
-			if (this.free && this.enabled) {
+			if (this.free && this.enabled && notification.source.policy.showBanners) {
 				this._extractNotificationInfo(notification);
 			}
 			});
