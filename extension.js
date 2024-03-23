@@ -26,13 +26,11 @@ const PopupMenu = imports.ui.popupMenu;
 
 const _ = ExtensionUtils.gettext;
 
-
 const Voluble = GObject.registerClass(
 class Voluble extends PanelMenu.Button {
+	unmuted = true; // Flag to keep track of Muted/Unmuted state
 	_init() {
 		super._init(0.0, _('Voluble indicator'));
-		this.free = true; //Flag to lock only the voluble thread while speaking
-		this.enabled = true; // Flag to keep track of Muted/Unmuted state
 		this.vol_tmp_filepath = GLib.build_filenamev([GLib.get_user_runtime_dir(), 'voluble.tmp']);
 		this.icon1 = new St.Icon({
 			icon_name: 'audio-volume-overamplified-symbolic-rtl',
@@ -50,38 +48,22 @@ class Voluble extends PanelMenu.Button {
 			this._notifyVoluble(_('About Voluble.'), _('Voluble announces your desktop notifications out-loud. \n You can find more details and leave feedback on GitHub.'), 'lang-variable-symbolic');
 		});
 		this.menu.addMenuItem(item2);
-/*  Is this code actually needed (are there persistent/resident sources to track?) 
-		const existingSources = Main.messageTray.getSources();
-		existingSources.forEach((source) => {
-			source.connect('notification-added', (_, notification) => {
-				this._extractNotificationInfo(notification);
-			});
-		});
-*/
-		Main.messageTray.connect('source-added', (_, source) => {
-			source.connect('notification-added', (_, notification) => {
-			if (this.free && this.enabled && notification.source.policy.showBanners) {
-				this._extractNotificationInfo(notification);
-			}
-			});
-		});
 	}
 
 	_toggleTTS() {
 		// Toggle extension state
-		this.enabled = !this.enabled;
+		this.unmuted = !this.unmuted;
 		// Update menu item label
-		this.itemED.label.text = _(this.enabled ? '🐧 Mute TTS' : '🐧 Unmute TTS');
-		this.icon1.set_icon_name(this.enabled ? 'audio-volume-overamplified-symbolic-rtl' : 'audio-volume-muted-symbolic-rtl'); 
-		// Perform any other actions based on extension state
+		this.itemED.label.text = _(this.unmuted ? '🐧 Mute TTS' : '🐧 Unmute TTS');
+		this.icon1.set_icon_name(this.unmuted ? 'audio-volume-overamplified-symbolic-rtl' : 'audio-volume-muted-symbolic-rtl'); 
 	}
 
 	_extractNotificationInfo(notification) {
 		// Extract title and description from the notification
 		const title = notification.title;
 		const description =  notification.body || notification.bannerBodyText || ' ';
+		//print(notification.datetime.get_microsecond());
 		try {
-			this.free = false;
 			const file = Gio.File.new_for_path(this.vol_tmp_filepath);
 			const textenc = new TextEncoder();
 			const bytes = textenc.encode(title+' '+description);
@@ -90,10 +72,9 @@ class Voluble extends PanelMenu.Button {
 			if (ok) {
 				try {
 					const proc = Gio.Subprocess.new(['voluble'],Gio.SubprocessFlags.NONE);
-					const success = proc.wait_check_async(null, () => {this.free = true;});
+					const success = proc.wait_check_async(null, null);
 				} catch (e) {
 					logError(e, 'Error spawning voluble!');
-					this.free = true;
 				}
 				}
 		} catch (e) {
@@ -105,10 +86,8 @@ class Voluble extends PanelMenu.Button {
 		// Create a custom multiline notification on pressing About
 		let source = new MTray.Source("Voluble Notification", icon);
 		Main.messageTray.add(source);
-		// Create the notification
 		let notification = new MTray.Notification(source, msg, details);
 		notification.setTransient(true);
-		// Show the notification
 		source.showNotification(notification);
 	}
 
@@ -118,19 +97,27 @@ class Extension {
 	constructor(uuid) {
 		this._uuid = uuid;
 		ExtensionUtils.initTranslations(GETTEXT_DOMAIN);
-		
+		this.mtid = null;
 	}
 
 	enable() {
 		this._ctux = new Voluble();
 		Main.panel.addToStatusArea(this._uuid, this._ctux);
+		this.mtid = Main.messageTray.connect('source-added', (_, source) => {
+			let sid = source.connect('notification-added', (_, notification) => {
+				source.disconnect(sid);
+				if (this._ctux.unmuted && notification.source.policy.showBanners) {
+					this._ctux._extractNotificationInfo(notification);
+				}
+			});
+		});
 	}
 
 	disable() {
-		if (this._ctux) {
-			this._ctux.destroy();
+			this._ctux?.destroy();
 			this._ctux = null;
-		}
+			Main.messageTray.disconnect(this.mtid);
+			this.mtid = null;
 	}
 }
 
