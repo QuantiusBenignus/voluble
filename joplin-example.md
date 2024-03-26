@@ -3,7 +3,7 @@
 Please, note the extension icon in the top bar.
 The appearing microphone icon indicates speech input (I am dictating the text into Joplin using [BlahST](https://github.com/QuantiusBenignus/BlahST).)
 
-Please, enable the sound and use full screen mode to see the details:
+Please, enable the sound and use full screen mode to see the details (the to-do alarm triggers at around 1:06 min):
 
 https://github.com/QuantiusBenignus/voluble/assets/120202899/92811247-9d9e-41a9-b395-c4ceb1657f9e
 
