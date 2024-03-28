@@ -37,6 +37,10 @@ class Voluble extends PanelMenu.Button {
 			style_class: 'system-status-icon',
 		});
 		this.add_child(this.icon1);
+		
+		this.itemR = new PopupMenu.PopupMenuItem(_('🐧 Read Selection'));
+		this.itemR.connect('activate', this._readSelection.bind(this));
+		this.menu.addMenuItem(this.itemR);
 
 		this.itemED = new PopupMenu.PopupMenuItem(_('🐧 Mute TTS'));
 		this.itemED.connect('activate', this._toggleTTS.bind(this));
@@ -82,6 +86,30 @@ class Voluble extends PanelMenu.Button {
 		}
 	}
 
+	_readSelection() {
+		St.Clipboard.get_default().get_text(St.ClipboardType.PRIMARY, (clipboard, text) => {
+			if (text) {
+				try {
+					const file = Gio.File.new_for_path(this.vol_tmp_filepath);
+					const textenc = new TextEncoder();
+					const bytes = textenc.encode(text);
+					const [ok, etag] = file.replace_contents(bytes, null, false,
+						Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+					if (ok) {
+						try {
+							const proc = Gio.Subprocess.new(['voluble'],Gio.SubprocessFlags.NONE);
+							const success = proc.wait_check_async(null, null);
+						} catch (e) {
+							logError(e, 'Error spawning voluble!');
+						}
+						}
+				} catch (e) {
+					logError(e, 'I/O error!');
+				}
+			}
+		});
+	}
+
 	_notifyVoluble(msg, details, icon) {
 		// Create a custom multiline notification on pressing About
 		let source = new MTray.Source("Voluble Notification", icon);
@@ -114,10 +142,14 @@ class Extension {
 	}
 
 	disable() {
-			this._ctux?.destroy();
+		if (this._ctux) {
+			this._ctux.destroy();
 			this._ctux = null;
+		}
+		if (this.mtid) { 
 			Main.messageTray.disconnect(this.mtid);
 			this.mtid = null;
+		}
 	}
 }
 
