@@ -126,8 +126,8 @@ With espeak-ng | With Piper
 ---
 
 ### Tips & Tricks
-The Mute function will keep notifications silent but is made by design to not affect the "Read Selection" button, selected text will be read nontheless.
-Since we have not implemented an "Interupt TTS" GUI action, if we goof off and select so much text that having it read out-loud for minutes fills us with regret, our salvation (or is it punishment) is to use the following command in the terminal or in the run window (ALT+F2):
+The Mute function will keep notifications silent but is made by design to not affect the "Read Selection" button - selected text will be read nontheless.
+Since we have not implemented an "Interupt TTS" GUI action, if we goof up and select so much text that having it read out-loud for minutes fills us with regret, our salvation (or is it punishment) is to use the following command in the terminal or in the run window (ALT+F2):
 
 ```
 pkill --signal SIGINT "[a]play"
