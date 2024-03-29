@@ -116,6 +116,16 @@ With espeak-ng | With Piper
 		`$ spd-say "Your computer can now speak to you nicely"`
 
 - Now all you have to do is set the option `use_spd=1` in the CONFIG block of the `voluble` helper  script to use speech-dispatcher instead of calling piper directly.
+### Tips & Tricks
+The Mute function will keep notifications silent but is made by design to not affect the "Read Selection" button, selected text will be read nontheless.
+Since we have not implemented an "Interupt TTS" GUI action, if we goof off and select so much text that having it read out-loud for minutes fills us with regret, our salvation (or is it punishment) is to use the following command in the terminal or in the run window (ALT+F2):
+
+```
+pkill --signal SIGINT "[a]play"
+```  
+
+(provided that we did not modify the voluble script to use something other than play or aplay). We cannot omit he quotes or we may kill a process named `display` for example.
+If we find yourselves too often a subject to this punitive action, creating an alias `oops='pkill --signal SIGINT "[a]play"'` in .[ba|z]shrc file will help.
 
 ### To-Do
 
