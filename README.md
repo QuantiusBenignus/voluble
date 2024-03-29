@@ -133,8 +133,8 @@ Since we have not implemented an "Interupt TTS" GUI action, if we goof up and se
 pkill --signal SIGINT "[a]play"
 ```  
 
-(provided that we did not modify the voluble script to use something other than play or aplay). We cannot omit the quotes or we may kill a process named `display` for example.
-If we find yourselves too often a subject to this punitive action, creating an alias `oops='pkill --signal SIGINT "[a]play"'` in .[ba|z]shrc file will help.
+(provided that we did not modify the voluble script to use something other than play or aplay). We should be careful to not omit the quotes or we may unintentionally kill a process named `display` for example.
+If we find yourselves too often a subject to this punitive action, creating an alias `oops='pkill --signal SIGINT "[a]play"'` in .bashrc (.zshrc, etc.) will help.
 
 ### To-Do
 
