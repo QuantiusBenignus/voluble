@@ -7,12 +7,20 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 
 
 Voluble is not an accessibility tool, it does not aim to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A reason for creating this extension has been the desire to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
+
 #### Features:
 - Read desktop notifications with human-like voice ( Piper).
 - Mute / Unmute text to speech.
 - Respect system "Do not Disturb" switch.
 - Read mouse selection on command (ignores non-text selections).
 - "About" triggers a demo notification (read outloud). 
+
+**NEW - a feature enhancement for users of Joplin. Have a summary of the tasks due in the next 12 hours read outloud at the start of a desktop session. Uses the optional python script `joplin-today.py` (or the shell script `joplin-today.sh` - another option).**
+Notification - Tasks in the next 12 hrs | Notification Audio 
+:-: | :-:
+![joplin-tasks-today](https://github.com/QuantiusBenignus/voluble/assets/120202899/4b728921-f675-4882-81bc-6ad6f71619ac) | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/c37329c5-93fb-4a99-9e34-3bad7c8cde5a" width=160/>
+
+Once  Voluble is installed (see [Quick Start](#quick-start)), you can simply invoke one of the two scripts from your session .profile file, or add it to you startup applications. (Linux only, will likely not work with encrypted database).
 
 ### Piper
 Unlike the default installation of the afforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher).
