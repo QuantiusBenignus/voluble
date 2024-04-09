@@ -20,7 +20,7 @@ Notification - Tasks in the next 12 hrs | Notification Audio
 :-: | :-:
 ![joplin-tasks-today](https://github.com/QuantiusBenignus/voluble/assets/120202899/4b728921-f675-4882-81bc-6ad6f71619ac) | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/c37329c5-93fb-4a99-9e34-3bad7c8cde5a" width=160/>
 
-Once  Voluble is installed (see [Quick Start](#quick-start)), you can simply invoke one of the two scripts by adding it to you startup applications. On most Linux desktops, placing a .desktop file in ~/.config/autostart/ will do the trick. Here is a sample `~/.config/autostart/joplintoday.desktop` file:
+Once  Voluble is installed (see [Quick Start](#quick-start)), you can simply invoke the python script by adding it to you startup applications. On most Linux desktops, placing a .desktop file in ~/.config/autostart/ will do the trick. Here is a sample `~/.config/autostart/joplintoday.desktop` file:
 ```
 [Desktop Entry]
 Type=Application
