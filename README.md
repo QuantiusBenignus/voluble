@@ -20,7 +20,18 @@ Notification - Tasks in the next 12 hrs | Notification Audio
 :-: | :-:
 ![joplin-tasks-today](https://github.com/QuantiusBenignus/voluble/assets/120202899/4b728921-f675-4882-81bc-6ad6f71619ac) | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/c37329c5-93fb-4a99-9e34-3bad7c8cde5a" width=160/>
 
-Once  Voluble is installed (see [Quick Start](#quick-start)), you can simply invoke one of the two scripts from your session .profile file, or add it to you startup applications. (Linux only, will likely not work with encrypted database).
+Once  Voluble is installed (see [Quick Start](#quick-start)), you can simply invoke one of the two scripts by adding it to you startup applications. On most Linux desktops, placing a .desktop file in ~/.config/autostart/ will do the trick. Here is a sample `~/.config/autostart/joplintoday.desktop` file:
+```
+[Desktop Entry]
+Type=Application
+Exec=/home/YourUsername/.local/bin/joplintoday.py
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+Name=JoplinToday
+
+```
+(Linux only, will likely not work with encrypted database).
 
 ### Piper
 Unlike the default installation of the afforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher).
