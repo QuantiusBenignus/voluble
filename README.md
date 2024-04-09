@@ -15,7 +15,7 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 
 Voluble is not an accessibility tool, it does not aim to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A reason for creating this extension has been the desire to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
 
-**NEW - a feature enhancement for users of Joplin. Have a summary of the tasks due in the next 12 hours read outloud at the start of a desktop session. Uses the optional python script `joplintoday.py` (or the shell script `joplintoday.sh` - another option).**
+**NEW - a feature enhancement for users of Joplin. Have a summary of the tasks due in the next 12 hours read outloud at the start of a desktop session. Uses the optional python script `joplintoday.py`.**
 Notification - Tasks in the next 12 hrs | Notification Audio 
 :-: | :-:
 ![joplin-tasks-today](https://github.com/QuantiusBenignus/voluble/assets/120202899/4b728921-f675-4882-81bc-6ad6f71619ac) | <video src="https://github.com/QuantiusBenignus/voluble/assets/120202899/c37329c5-93fb-4a99-9e34-3bad7c8cde5a" width=160/>
