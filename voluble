@@ -1,5 +1,5 @@
 #!/usr/bin/zsh
-# Copyright (c) 2024 Quantius Benignus
+# Copyright (c) 2025 Quantius Benignus
 # 
 # THE SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -15,6 +15,7 @@
 #  - piper installation (see https://github.com/rhaspi/piper) 
 #  - optionally, a recent version of 'sox' from your system's repositories.
 #  - optionally, a speech dispatcher installation (preinstalled in many distributions)
+#  - recommended, a local LLM engine with a small but capable model (Gemma3-4B) to summarize sellected text
 #--------------------------------------------------------------------------
 
 #---USER CONFIGURATION BLOCK----------------------------------------------------------------------
@@ -22,17 +23,21 @@
 #Set to 1 to use sox instead of alsa play (for whatever reason):
 use_sox=0
 #Set to 1 to use speech dispatcher integration of Piper (as per instructions at https://github.com/QuantiusBenignus/voluble):
-use_spd=0
+use_spd=1
 #If the above is set to 0, piper will be called directly with the voice specified below.
 # Choose the default piper voice (and language) for voluble to use for notifications:
-pvoice="$HOME/PATH_TO_YOUR_Piper_VOICES/en_US-lessac-low.onnx"
+pvoice="$HOME/AI/Models/piper/en_US-lessac-low.onnx"
+#If you have a local LLM inference engine (llama.cpp, llamafile etc.) you can set it up to summarize selected text and then Voluble will read the summary to you.
+#LLModel="$HOME/AI/Models/gemma-3-4b-it-Q6_K_L.gguf"
+#If not set to empty string:
+LLModel=""
 #---END USER CONFIG BLOCK------------------------------------------------------------------------
 
 #---CHECK DEPENDENCIES. This block can be commented out once dependencies confirmed-----------------------------------
-if [ use_sox = 1 ]; then
+if [[ use_sox == 1 ]]; then
  command -v sox &>/dev/null || { echo "sox is required. Please, install sox" >&2 ; exit 1 ; }
 fi
-if [ use_spd = 1 ]; then
+if [[ use_spd == 1 ]]; then
  command -v spd-say &>/dev/null || { echo "You have selected to use speech dispatcher. Please, install it and set up to call piper." >&2 ; exit 1 ; }
 fi
 command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see https://github.com/rhasspy/piper/releases)\
@@ -40,6 +45,10 @@ command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see
 'ln -s /full/path/to/piper/piper \$HOME/.local/bin/piper'" >&2 ; exit 1 ; }
 gnome-extensions list | grep 'voluble' &>/dev/null || { echo "This \
 script is made to work with voluble (GNOME shell extension). Please, install it from https://extensions.gnome.org/extension/6849/voluble/" >&2 ; exit 1 ; }
+if [[ -n LLModel ]]; then
+ command -v llam &>/dev/null || { echo -e "A symbolic link 'llam' that resolves to an LLM inference engine, is required.\n Please, install such\
+     and adjust the command line parameters in the relevant section of voluble." >&2 ; exit 1 ; }
+fi
 #---END CHECK DEPENDENCIES. The above block can be commented out after successful 1st run----------------------------
 
 #Decide on sample rate, based on model choice:
@@ -51,13 +60,24 @@ fi
 
 if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
     data=$(cat "$XDG_RUNTIME_DIR/voluble.tmp")
-
-elif [ $# -gt 0 ]; then
-    # multiple arguments are ignored
-    # data="$1"
-    data="This script is made to work only with the Voluble GNOME shell extension" 
+    if [ $# -gt 0 ]; then
+        if [[ $1 == -s ]]; then
+            if [[ -n LLModel ]]; then
+                #Sending data to LLM for summarization (Please, adjust command line to match your inference engine syntax):
+                summary=$(llam -t 8 --temp 0 -fa --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
+                -p "<start_of_turn>user\nYou are Gemma3. You are helpful assistant who is great at summarizing text. Summarize the following to a sufficient minimum:\n${data}<end_of_turn>\n<start_of_turn>model" )
+                summary="${summary//\*/}"
+                data="${summary/\[end of text\]}"
+            else
+                data="Your local LLM summarizer is not set up. Please, set it up in Voluble."
+            fi
+        else
+            # multiple arguments are ignored
+            data="Invalid argument. $0 works only with the Voluble GNOME shell extension" 
+        fi
+    fi
 else
-    data="All dependencies are satisfied. I have nothing else to say!"
+    data="All dependencies are satisfied. You can now use the Voluble GNOME shell extension."
 fi
 # Process data 
 if [ use_spd = 1 ]; then
