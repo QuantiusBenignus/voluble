@@ -12,6 +12,7 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 - **Respect system "Do not Disturb" switch.**
 - **Read mouse selection outloud (ignores non-text selections).**
 - **"About" triggers a demo notification (read outloud).**
+- **Interupt speech in progress from the menu**
 - **NEW: Summarize selected text block, using a local LLM.** 
 
 Voluble is not an accessibility tool, it does not aim to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A reason for creating this extension has been the desire to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
@@ -150,11 +151,12 @@ The Mute function will keep notifications silent but is made by design to not af
 Since we have not implemented an "Interupt TTS" GUI action, if we goof up and select so much text that having it read out-loud for minutes fills us with regret, our salvation (or is it punishment) is to use the following command in the terminal or in the run window (ALT+F2):
 
 ```
-pkill --signal SIGINT "[a]play"
+pkill -SIGINT "(ap|p)lay"
 ```  
 
 (provided that we did not modify the voluble script to use something other than play or aplay). We should be careful to not omit the quotes or we may unintentionally kill a process named `display` for example.
 If we find yourselves too often a subject to this punitive action, creating an alias `oops='pkill --signal SIGINT "[a]play"'` in .bashrc (.zshrc, etc.) will help.
+**NEW: The new menu item "Stop Speaking" in the GUI now can be used instead**
 
 ### To-Do
 
