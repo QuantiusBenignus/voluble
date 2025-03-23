@@ -7,11 +7,12 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 
 
 #### Features:
-- Read desktop notifications with human-like voice ( Piper).
-- Mute / Unmute text to speech.
-- Respect system "Do not Disturb" switch.
-- Read mouse selection on command (ignores non-text selections).
-- "About" triggers a demo notification (read outloud). 
+- **Read desktop notifications with human-like voice ( Piper).**
+- **Mute / Unmute text to speech.**
+- **Respect system "Do not Disturb" switch.**
+- **Read mouse selection outloud (ignores non-text selections).**
+- **"About" triggers a demo notification (read outloud).**
+- **NEW: Summarize selected text block, using a local LLM.** 
 
 Voluble is not an accessibility tool, it does not aim to replace tools like Orca which expose functionality needed by users with disabilities. It simply enhances the desktop notifications by reading them outloud, in the absence of (or in addition to) any sound that might accompany the notification. This way, the user will be properly alerted and will not risk missing even the most transient of notifications, clearly hearing what the computer has to say, even when not looking. A reason for creating this extension has been the desire to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
 
