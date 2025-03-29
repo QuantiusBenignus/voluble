@@ -15,7 +15,7 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
-
+// This ia the legacy code for older versions of the Gnome shell (up to ver.44)
 const GETTEXT_DOMAIN = 'voluble-indicator-extension';
 const { GObject, St, Gio, GLib } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
