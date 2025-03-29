@@ -152,11 +152,14 @@ Since we have not implemented an "Interupt TTS" GUI action, if we goof up and se
 
 ```
 pkill -SIGINT "(ap|p)lay"
+#or for spd-say:
+pkill -SIGINT "spd-say"
+#or more broadly (in your preferred order):
+killall -q -u $USER -SIGINT spd-say aplay play
 ```  
 
-(provided that we did not modify the voluble script to use something other than play or aplay). We should be careful to not omit the quotes or we may unintentionally kill a process named `display` for example.
-If we find yourselves too often a subject to this punitive action, creating an alias `oops='pkill --signal SIGINT "[a]play"'` in .bashrc (.zshrc, etc.) will help.
-**NEW: The new menu item "Stop Speaking" in the GUI now can be used instead**
+(provided that we did not modify the voluble script to use something other than play or aplay, or spd-say). Please, note that speech dispatcher takes a few seconds to 'gracefully' shut down after receiving the SIGINT. If we find yourselves too often a subject to this punitive action, creating an alias `shutup='pkill --signal SIGINT (ap|p)lay"'` in .bashrc (.zshrc, etc.) will help.
+**NEW: The new menu item "Stop Speaking" in the GUI can now be used instead**
 
 ### To-Do
 
