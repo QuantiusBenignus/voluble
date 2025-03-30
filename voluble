@@ -1,4 +1,5 @@
 #!/usr/bin/zsh
+# Change the above to bash if needed. Tested on zsh first.
 # Copyright (c) 2025 Quantius Benignus
 # 
 # THE SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -31,6 +32,9 @@ pvoice="$HOME/AI/Models/piper/en_US-lessac-low.onnx"
 #LLModel="$HOME/AI/Models/gemma-3-4b-it-Q6_K_L.gguf"
 #If not set to empty string:
 LLModel=""
+#The command to call for LLM inference (must be in the PATH, or specify a full path to it):
+llam="$HOME/FULL/PATH/TO/llama-cli"
+#IMPORTANT: If you use another inference engine, check the invocation on line 71 and adjust the command line parameters as needed.
 #---END USER CONFIG BLOCK------------------------------------------------------------------------
 
 #---CHECK DEPENDENCIES. This block can be commented out once dependencies confirmed-----------------------------------
@@ -64,7 +68,7 @@ if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
         if [[ $1 == -s ]]; then
             if [[ -n LLModel ]]; then
                 #Sending data to LLM for summarization (Please, adjust command line to match your inference engine syntax):
-                summary=$(llam -t 8 --temp 0 -fa --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
+                summary=$($llam -t 8 --temp 0 -fa --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
                 -p "<start_of_turn>user\nYou are Gemma3. You are helpful assistant who is great at summarizing text. Summarize the following to a sufficient minimum:\n${data}<end_of_turn>\n<start_of_turn>model" )
                 summary="${summary//\*/}"
                 data="${summary/\[end of text\]}"
