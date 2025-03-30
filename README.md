@@ -68,6 +68,10 @@ cd ~/.local/bin && wget https://github.com/QuantiusBenignus/voluble/blob/main/vo
 ```
 That is it, now the extension should work by speaking out-loud in human-like voice all that the computer has to say via notifications.
 
+**Optional:** Setting up a local LLM to summarize selected text:
+- Download [llama.cpp](https://github.com/ggml-org/llama.cpp) or a [llamafile](https://github.com/Mozilla-Ocho/llamafile) (or any other inference engine that can be run in a single-shot mode from the command line)
+- Set it up in the `voluble` script by specifying the model file in the config section and adjusting the command to run.
+
 ---
 
 ### Speech Dispatcher Integration
@@ -167,7 +171,7 @@ killall -q -u $USER -SIGINT spd-say aplay play
 
 - [ ] Add automatic translation for the extension GUI
 - [x] Make aware of system-wide "Do not Disturb"
-- [ ] Add extension code for ver. 45+ of the GNOME shell
+- [x] Add extension code for ver. 45+ of the GNOME shell
 
 ### Credits
 
