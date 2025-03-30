@@ -1,0 +1,12 @@
+{
+  "description": "Pleasant-sounding, talkative announcer of system or user notifications. Screen reader, text summarizer. Give a real voice to GNOME.",
+  "name": "Voluble",
+  "shell-version": [
+    "46",
+    "47",
+    "48"
+  ],
+  "url": "https://github.com/QuantiusBenignus/voluble",
+  "uuid": "voluble@quantiusbenignus.local",
+  "version": 5
+}
