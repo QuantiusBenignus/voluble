@@ -6,7 +6,7 @@ Voluble is a simple GNOME shell extension that brings a natural-sounding, human-
 https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-9219-11b3bc0e5a2d
 
 
-#### Features:
+#### Features (NOW supports version 48 of the Gnome shell):
 - **Read desktop notifications with human-like voice ( Piper).**
 - **Mute / Unmute text to speech.**
 - **Respect system "Do not Disturb" switch.**
