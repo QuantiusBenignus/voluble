@@ -74,6 +74,8 @@ export default class Voluble extends Extension {
         St.Clipboard.get_default().get_text(St.ClipboardType.PRIMARY, (clipboard, text) => {
             if (text) {
                 this._runVoluble(text, ['-s']);
+            } else {
+                this._runVoluble('Please, select text first!');                
             }
         });
     }
@@ -82,6 +84,8 @@ export default class Voluble extends Extension {
         St.Clipboard.get_default().get_text(St.ClipboardType.PRIMARY, (clipboard, text) => {
             if (text) {
                 this._runVoluble(text);
+            } else {
+                this._runVoluble('Please, select text first!');                
             }
         });
     }
@@ -105,7 +109,7 @@ export default class Voluble extends Extension {
             });
             systemSource.addNotification(notification);
         } else {
-             log(`Voluble: Could not get systemSource to display notification: ${msg}`);
+             console.log(`Voluble: Could not get systemSource to display notification: ${msg}`);
         }
     }
 
@@ -117,11 +121,11 @@ export default class Voluble extends Extension {
         // Check if already processed
         const notificationId = notification.id;
         if (this._processedNotificationIds.has(notificationId)) {
-            // log(`Voluble: Ignoring already processed notification ID: ${notificationId}`);
+            // console.log(`Voluble: Ignoring already processed notification ID: ${notificationId}`);
             return; // Already processed, do nothing
         }
         // Cleanup
-        // log(`Voluble: Processing notification ID: ${notificationId}`);
+        // console.log(`Voluble: Processing notification ID: ${notificationId}`);
         this._processedNotificationIds.add(notificationId);
         // Remove existing timeout for this ID if somehow present (shouldn't happen often)
         if (this._notificationTimeouts.has(notificationId)) {
@@ -131,7 +135,7 @@ export default class Voluble extends Extension {
         const timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, NOTIFICATION_PROCESSED_TIMEOUT_SECONDS, () => {
             this._processedNotificationIds.delete(notificationId);
             this._notificationTimeouts.delete(notificationId);
-            // log(`Voluble: Removed notification ID ${notificationId} from processed set after timeout.`);
+            // console.log(`Voluble: Removed notification ID ${notificationId} from processed set after timeout.`);
             return GLib.SOURCE_REMOVE; // Ensure the timeout runs only once
         });
         this._notificationTimeouts.set(notificationId, timeoutId);
@@ -139,7 +143,7 @@ export default class Voluble extends Extension {
     }
     
     enable() {
-        log(`Enabling ${this.metadata.name}`);
+        //log(`Enabling ${this.metadata.name}`);
         this._connections = []; 
         this._processedNotificationIds = new Set();
         this._notificationTimeouts = new Map();
@@ -193,11 +197,11 @@ export default class Voluble extends Extension {
         });
         this._connections.push([Main.messageTray, trayConnId]); // Track connection to the tray itself
 
-        log(`${this.metadata.name} enabled.`);
+        console.log(`${this.metadata.name} enabled.`);
     }
 
     disable() {
-        log(`Disabling ${this.metadata.name}`);
+        //log(`Disabling ${this.metadata.name}`);
 
         // Disconnect all signals
         for (const [sourceObject, connectionId] of this._connections) {
@@ -227,6 +231,6 @@ export default class Voluble extends Extension {
         } catch(e) {
              // Ignore errors deleting temp file
         }
-        log(`${this.metadata.name} disabled.`);
+        console.log(`${this.metadata.name} disabled.`);
     }
 }
