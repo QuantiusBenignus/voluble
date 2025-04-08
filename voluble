@@ -72,6 +72,8 @@ if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
                 -p "<start_of_turn>user\nYou are Gemma3. You are helpful assistant who is great at summarizing text. Summarize the following to a sufficient minimum:\n${data}<end_of_turn>\n<start_of_turn>model" )
                 summary="${summary//\*/}"
                 data="${summary/\[end of text\]}"
+                #Store as an LLM prompt for subsequent ingestion by [Zshelf](https://github.com/QuantiusBenignus/Zshelf)
+                echo "$data" >> /dev/shm/promf
             else
                 data="Your local LLM summarizer is not set up. Please, set it up in Voluble."
             fi
