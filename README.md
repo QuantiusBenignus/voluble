@@ -69,6 +69,7 @@ That is it, now the extension should work by speaking out-loud in human-like voi
 **Optional:** Setting up a local LLM to summarize selected text:
 - Download [llama.cpp](https://github.com/ggml-org/llama.cpp) or a [llamafile](https://github.com/Mozilla-Ocho/llamafile) (or any other inference engine that can be run in a single-shot mode from the command line)
 - Set it up in the `voluble` script by specifying the model file in the config section and adjusting the command to run.
+- The summary text is read outloud and also appended to `/dev/shm/promf` (which coincidentally is the LLM prompt management file of the [Zshelf](https://github.com/QuantiusBenignus/Zshelf) tool) for further use.
 
 ---
 
