@@ -74,6 +74,8 @@ if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
                 data="${summary/\[end of text\]}"
                 #Store as an LLM prompt for subsequent ingestion by [Zshelf](https://github.com/QuantiusBenignus/Zshelf)
                 echo "$data" >> /dev/shm/promf
+                #and even place it in the clipboard for pasting (requires xsel: `apt install xsel`):
+                #echo "$data" | xsel -ib
             else
                 data="Your local LLM summarizer is not set up. Please, set it up in Voluble."
             fi
