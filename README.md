@@ -10,7 +10,7 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 - **Respect system "Do not Disturb" switch.**
 - **Read mouse selection outloud (ignores non-text selections).**
 - **"About" triggers a demo notification (read outloud).**
-- **Interupt speech in progress from the menu**
+- **Interrupt speech in progress from the menu**
 - **NEW: Summarize selected text block, using a local LLM.**
 
 **NOTE: Code for ver. 44 (and prior) of the Gnome shell can be found in ver.44 folder**
@@ -36,7 +36,7 @@ Name=JoplinToday
 (Linux only, will likely not work with encrypted database).
 
 ### Piper
-Unlike the default installation of the afforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher).
+Unlike the default installation of the aforementioned Orca (and speech-dispatcher in the background), Voluble uses a modern neural text-to-speech (TTS) engine called [Piper](https://github.com/rhasspy/piper). Among the multiple (and growing) choices of human-sounding neural TTS options, Piper is fast and lightweight for its decent quality (a quantum leap from the default espeak-ng in speech dispatcher).
 We can set up Voluble with Piper in two ways (not mutually exclusive):
 - For a [quick start](#quick-start), we can set up Voluble to use Piper directly, completely ignoring the infrastructure provided by speech dispatcher. 
 - If instead, we do not want to go rogue and prefer to play nice with the system logic, it is actually possible to use [speech dispatcher](#speech-dispatcher-integration) to call Piper as a backend synthesizer to speak out-loud the notifications but we need to register Piper as a valid backend module first. The advantage with Piper set as the default speech synthesizer in speech dispatcher is that accessibility tools like Orca will then also sound nice. Just pressing `Super + Alt +S` will start Orca with Piper and we will hear clear human-like voice as we navigate the GNOME GUI. 
@@ -52,7 +52,7 @@ We can set up Voluble with Piper in two ways (not mutually exclusive):
 - Install the Voluble GNOME shell extension 
 	-- either with one click install from the [GNOME extension website](https://extensions.gnome.org/extension/6849/voluble/).
 	
-	-- or manually, by clonning the code from Github (most up-to-date code):
+	-- or manually, by cloning the code from Github (most up-to-date code):
 ```
 git clone https://github.com/QuantiusBenignus/voluble && cd voluble && \
 unzip voluble@quantiusbenignus.local.zip -d $HOME/.local/share/gnome-shell/extensions/ && \
@@ -69,13 +69,13 @@ That is it, now the extension should work by speaking out-loud in human-like voi
 **Optional:** Setting up a local LLM to summarize selected text:
 - Download [llama.cpp](https://github.com/ggml-org/llama.cpp) or a [llamafile](https://github.com/Mozilla-Ocho/llamafile) (or any other inference engine that can be run in a single-shot mode from the command line)
 - Set it up in the `voluble` script by specifying the model file in the config section and adjusting the command to run.
-- The summary text is read outloud and also appended to `/dev/shm/promf` (which coincidentally is the LLM prompt management file of the [Zshelf](https://github.com/QuantiusBenignus/Zshelf) tool) for further use.
+- The  text is read outloud and also appended to `/dev/shm/promf` (which coincidentally is the LLM prompt management file of the [Zshelf](https://github.com/QuantiusBenignus/Zshelf) tool) for further use.
 
 ---
 
 ### Speech Dispatcher Integration
 <details>
-<summary> <h4>Optional Step (click to expand)</h4></summary>
+<> <h4>Optional Step (click to expand)</h4></>
 
 Speech Dispatcher is a core accessibility tool designed to facilitate speech synthesis for people with visual impairments. It acts as a bridge between client applications (programs that produce spoken text) and software speech synthesizers (programs that convert text into speech).
 Speech Dispatcher would typically come preinstalled in many Linux distributions with the espeak-ng TTS engine as the default. The result does not sound good at all when compared with the quality of the new neural TTS engines. Here is a comparison, justifying the integration of Piper with speech dispatcher:
@@ -163,7 +163,7 @@ pkill -SIGINT "spd-say"
 killall -q -u $USER -SIGINT spd-say aplay play
 ```  
 
-(provided that we did not modify the voluble script to use something other than play or aplay, or spd-say). Please, note that speech dispatcher takes a few seconds to 'gracefully' shut down after receiving the SIGINT. If we find yourselves too often a subject to this punitive action, creating an alias `shutup='pkill --signal SIGINT (ap|p)lay"'` in .bashrc (.zshrc, etc.) will help.
+(provided that we did not modify the voluble script to use something other than play or aplay, or spd-say). Please, note that speech dispatcher takes a few seconds to 'gracefully' shut down after receiving the SIGINT. If we find ourselves too often a subject to this punitive action, creating an alias `shutup='pkill --signal SIGINT (ap|p)lay'` in .bashrc (.zshrc, etc.) will help.
 **NEW: The new menu item "Stop Speaking" in the GUI can now be used instead**
 
 ### To-Do
