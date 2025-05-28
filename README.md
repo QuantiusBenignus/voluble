@@ -45,6 +45,7 @@ We can set up Voluble with Piper in two ways (not mutually exclusive):
 
 - Download Piper from the [GitHub releases page](https://github.com/rhasspy/piper/releases). It can be run with Python, but the binary releases are suggested here as they can give an edge of performance in this scenario.
 - Download the desired voice files (a .onnx and a json file per each voice) for the language(s) of choice. As of this writing, [30 languages](https://github.com/rhasspy/piper?tab=readme-ov-file#voices) are supported. You can listen to samples and download files [here](https://rhasspy.github.io/piper-samples/). Once downloaded, make sure that each .json file is named exactly like its corresponding  .onnx voice file.
+- Place the model files (.onnx and .json) in a folder of your choice. Do not forget later to set the default model file in the CONFIG BLOCK of the `voluble` script.
 - Make a symbolic link in your $PATH (say, in `~/.local/bin`) to the `piper` executable:
 ```
  ln -s ~/FOLDER_WITH_EXTRACTED_PIPER/piper ~/.local/bin/piper
@@ -64,6 +65,8 @@ gnome-extensions enable voluble@quantiusbenignus.local
 ```
 cd ~/.local/bin && wget https://github.com/QuantiusBenignus/voluble/blob/main/voluble  && chmod +x voluble
 ```
+- Edit the USER CONFIG BLOCK in the script to adjust location of the default piper model (the folder with downloaded .onnx files) and other settings.
+
 That is it, now the extension should work by speaking out-loud in human-like voice all that the computer has to say via notifications.
 
 **Optional:** Setting up a local LLM to summarize selected text:
