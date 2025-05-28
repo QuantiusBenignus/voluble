@@ -24,7 +24,7 @@
 #Set to 1 to use sox instead of alsa play (for whatever reason):
 use_sox=0
 #Set to 1 to use speech dispatcher integration of Piper (as per instructions at https://github.com/QuantiusBenignus/voluble):
-use_spd=1
+use_spd=0
 #If the above is set to 0, piper will be called directly with the voice specified below.
 # Choose the default piper voice (and language) for voluble to use for notifications:
 pvoice="$HOME/AI/Models/piper/en_US-lessac-low.onnx"
