@@ -11,7 +11,7 @@ https://github.com/QuantiusBenignus/voluble/assets/120202899/2e0d9d5e-0c18-4f8c-
 - **Read mouse selection outloud (ignores non-text selections).**
 - **"About" triggers a demo notification (read outloud).**
 - **Interrupt speech in progress from the menu**
-- **NEW: Summarize selected text block, using a local LLM.**
+- **NEW: Summarize selected text block, using a local LLM. (An added benefit is that a good multilingual LLM will translate selected text to the language of the prompt).**
 
 **NOTE: Code for ver. 44 (and prior) of the Gnome shell can be found in ver.44 folder**
 
@@ -168,6 +168,7 @@ killall -q -u $USER -SIGINT spd-say aplay play
 
 (provided that we did not modify the voluble script to use something other than play or aplay, or spd-say). Please, note that speech dispatcher takes a few seconds to 'gracefully' shut down after receiving the SIGINT. If we find ourselves too often a subject to this punitive action, creating an alias `shutup='pkill --signal SIGINT (ap|p)lay'` in .bashrc (.zshrc, etc.) will help.
 **NEW: The new menu item "Stop Speaking" in the GUI can now be used instead**
+**Try using the text summarization function on a foreign language text! The LLM will translate it to the language of the prompt (English used in voluble)**
 
 ### To-Do
 
