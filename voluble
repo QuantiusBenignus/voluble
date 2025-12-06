@@ -68,7 +68,7 @@ if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
         if [[ $1 == -s ]]; then
             if [[ -n LLModel ]]; then
                 #Sending data to LLM for summarization (Please, adjust command line to match your inference engine syntax):
-                summary=$($llam -t 8 --temp 0 -fa --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
+                summary=$($llam -t 8 --temp 0 --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
                 -p "<start_of_turn>user\nYou are Gemma3. You are helpful assistant who is great at summarizing text. Summarize the following to a sufficient minimum:\n${data}<end_of_turn>\n<start_of_turn>model" )
                 summary="${summary//\*/}"
                 data="${summary/\[end of text\]}"
