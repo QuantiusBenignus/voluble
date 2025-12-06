@@ -167,8 +167,9 @@ killall -q -u $USER -SIGINT spd-say aplay play
 ```  
 
 (provided that we did not modify the voluble script to use something other than play or aplay, or spd-say). Please, note that speech dispatcher takes a few seconds to 'gracefully' shut down after receiving the SIGINT. If we find ourselves too often a subject to this punitive action, creating an alias `shutup='pkill --signal SIGINT (ap|p)lay'` in .bashrc (.zshrc, etc.) will help.
-**NEW: The new menu item "Stop Speaking" in the GUI can now be used instead**
-**Try using the text summarization function on a foreign language text! The LLM will translate it to the language of the prompt (English used in voluble)**
+**NEW: The new menu item "Stop Speaking" in the GUI can now be used instead.**
+
+**COOL FEATURE: Try using the text summarization function on a foreign language text (that news article in a language you wish you kenw)! The LLM will translate it to the language of the prompt (English used in voluble, change as needed)**
 
 ### To-Do
 
