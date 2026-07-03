@@ -33,10 +33,10 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 | **Translate selected text** (`voluble -t`) | Same pipeline as summarise, but the LLM returns a translation into a configurable target language of your choice. | **YES** |
 | **Explain / “teach‑back”** (`voluble -e`) | LLM produces a short expert‑style explanation of the selected passage. | **YES** |
 | **Proofread and replace** (`voluble -p`) | LLM returns a JSON object with `{ "correction": "...", "brief": "..." }`. The corrected text is copied to the clipboard, and the brief is spoken. | **YES** |
-| **Local server to CLI fallback `llama‑completion`** | If a server is running on `localhost:8080` the script prefers it; otherwise it falls back to the CLI. | **YES** |
+| **Local server to CLI fallback e.g. `llama‑completion`** | If a server is running on `localhost:8080` the script prefers it; otherwise it falls back to the CLI. | **YES** |
 | **Optional use of `sox` or `spd‑say`** | Choose your audio backend (`aplay`, `play`, `sox`, or Speech‑Dispatcher). | |
 | **Integration with Joplin‑Today script** | (Optional) Summarise today’s Joplin tasks at session start. | |
-| **Extensible “commitments”** | Random, friendly “I’m on it…” messages spoken before the LLM runs. | YES |
+| **Extensible “commitments”** | Random, friendly “I’m on it…” messages spoken before the LLM runs. | **YES** |
 
 ---  
 
@@ -44,19 +44,18 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 
 | Feature | Description | Screencast |
 |---------|-------------|-----------|
-| **Multilingual `Read-Aloud` on‑the‑fly** | A bustling scene in the Italian Alps – an Italian clerk, a Chinese tourist, a French traveler, an American, and a Russian speak over each other. Voluble detects and switches languages instantly. | 🎞️ **[Multilingual Demo (Italian Alps)](https://example.com/multilingual‑alps.mp4)** |
-| **Summarise Chinese newspaper** | Select a paragraph from a Chinese newspaper, press *`Voluble → Summarise`*. The LLM returns an English summary which is spoken. | 🎞️ **[Summarise Chinese → English] (https://example.com/summary‑cn‑en.mp4)** |
-| **Translate to French** | Highlight a Spanish paragraph, press *`Voluble → Translate`*. The result is spoken in French. | 🎞️ **[Translate Spanish → French] (https://example.com/translate‑es‑fr.mp4)** |
-| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Rust snippet] (https://example.com/explain‑rust.mp4)** |
-| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | 🎞️ **[Proofread Text] (https://example.com/proofread‑json.mp4)** |
-| **Joplin‑Today integration** | At login, the script reads a summary of today’s Joplin tasks. | 🎞️ **[Joplin‑Today] (https://example.com/joplin‑today.mp4)** |
-| **Mute / Unmute demo** | Shows the mute toggle working while notifications keep arriving. | 🎞️ **[Mute/Unmute] (https://example.com/mute‑demo.mp4)** |
+| **Multilingual `Read-Aloud` on‑the‑fly** | A fictional scene in the Italian Alps – an Italian clerk, a Chinese tourist, a French traveler, an American, and a Russian speak over each other. Voluble detects and switches languages instantly. | 🎞️ **[Multilingual Demo (Italian Alps)](assets/voluble_goat_Alps.mp4)** |
+| **Summarise Chinese newspaper** | Select a paragraph from a Chinese newspaper, press *`Voluble → Summarise`*. The LLM returns an English summary which is spoken. | 🎞️ **[Summarise Chinese → English] (assets/voluble_summary_crosslingua.mp4)** |
+| **Translate to French** | Highlight a Spanish paragraph, press *`Voluble → Translate`*. The result is spoken in French. | 🎞️ **[Translate Spanish → French] (assets/voluble_translate_fr.mp4)** |
+| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Code snippet] (assets/voluble_code_explain.mp4)** |
+| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | 🎞️ **[Proofread Text] (assets/voluble_proofread.mp4)** |
+| **Joplin‑Today integration** | At login, the script reads a summary of today’s Joplin tasks. | **(see video below)** |
 
 ---  
 
 ## Quick‑Start Installation  
 
-> **NOTE** – The steps below assume a **zsh** environment (the helper script ships with a zsh shebang).  If you prefer **bash**, you will have to rewrite any (many) Zsh‑specific syntax fields accordingly.
+> **NOTE** – The steps below assume a **zsh** environment (the main script ships with a zsh shebang).  If you prefer **bash**, you will have to rewrite any (many) Zsh‑specific syntax fields accordingly.
 
 1. **Install required system packages**  
 
@@ -68,7 +67,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 2. **Install the GNOME extension**  
 
    *One‑click:*  
-   <a href="https://extensions.gnome.org/extension/6849/voluble/"><img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="40"></a>  
+   <a href="https://extensions.gnome.org/extension/6849/voluble/"><img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" height="50"></a>  
 
    *Manual:*  
 
@@ -165,14 +164,18 @@ use_sox=1
 
 # Use Speech‑Dispatcher (integrates with Orca etc. - In the context of LID, this has become less desirable and more of an extraneous setup.)
 use_spd=1
+```
 
+### 2. Interacting from the command line  
+
+```
 #Use the command line to supply textual payload (questions, program outputs, other text) for voluble's tools (e.g. Elucidate - will explain the recent ):
 journalctl -p err --since "yesterday" | fx -p
 ```
 
 The zsh function `fx` (-p loads the PRIMARY SELECTION), along with its mirror `xf` and other tools, is available as part of the [zshelf](https://github.com/QuantiusBenignus/zshelf) repository (a zsh-centric local LLM interaction suite ).
 
-### 2. Adding a New Language  
+### 3. Adding a New Language  
 
 1. **Download the model** (e.g. `nl_NL‑mls-medium.onnx`).  
 2. **Add entries** to the two associative arrays:  
@@ -184,7 +187,7 @@ The zsh function `fx` (-p loads the PRIMARY SELECTION), along with its mirror `x
 
 4. Because the extension has not changed you do not need to **Restart the extension** (`gnome-extensions restart voluble`).
 
-### 3. Custom LLM Server  
+### 4. Custom LLM Server  
 
 If you run a local **llama.cpp server**, or **vLLM** that speaks the OpenAI Chat Completion API, just set:  
 
@@ -194,14 +197,14 @@ LLM_SERVER="http://localhost:11434"
 
 The script will generally work with any OpenAI compatible API.
 
-### 4. Proofread Mode Details  
+### 5. Proofread Mode Details  
 
 - The LLM **must** return pure JSON (no markdown fences).  
 - The script strips any surrounding `````json````` fences automatically.  
 - Example system prompt (built‑in) forces the model to obey the schema.  
 - The corrected text is placed on the clipboard; you can paste it anywhere (`Ctrl+V` or `Super+V`), incl. directly over the selection.  
 
-### 5. Using `fasttext` for Language Detection  
+### 6. Using `fasttext` for Language Detection  
 
 If `fasttext` is **not** installed, Voluble falls back to the primary configured language (`$lang`).  
 To install fasttext and the language‑identification model:
@@ -215,7 +218,7 @@ wget -O "$HOME/AI/Models/Piper/lid.176.bin" \
 
 The script automatically picks up `$FASTTEXT_MODEL` if you set that environment variable.
 
-###  6. **For users of Joplin. Spoken summary at stratup of the tasks due soon. Uses the optional python script `joplintoday.py`.**
+###  7. **For users of Joplin. Spoken summary at stratup of the tasks due soon. Uses the optional python script `joplintoday.py`.**
 One of the many reasons for creating this extension was the need to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
 
 Notification - Tasks in the next 12 hrs | Notification Audio 
@@ -241,15 +244,15 @@ Name=JoplinToday
 
 | Tip | Command |
 |-----|---------|
-| **Stop a runaway read** | `pkill -SIGINT "voluble (ap|p)lay"`  (or `pkill -SIGINT spd-say`) |
-| **Create an alias** | `alias shutup='pkill -SIGINT "voluble (ap|p)lay"'` |
-| **Add a custom commitment** | Edit the `commitments` array – any line will be spoken before the LLM runs. |
+| **Stop a runaway read** | `pkill -SIGINT voluble && pkill play || pkill aplay`  (or `pkill -SIGINT spd-say`) |
+| **Create an alias** | `alias shutup='pkill -SIGINT voluble && pkill play || pkill aplay'` |
+| **Add a custom commitment** | Edit the `commitments` array – any line will be spoken before the LLM runs. Only registered languages. |
 | **Debug dependencies** | Run `voluble` (no flags) from a terminal; you’ll catch any dependency issues. |
 | **Disable dependency check**| After setup is complete, comment out the `depends` function call at the beggining of main() to avoid the check on each run.|
 | **Change sample rate** (for custom low‑quality models) | Should be handled automatically by the script |
 | **Use Wayland clipboard** | The script automatically picks `wl-copy` when `$XDG_SESSION_TYPE` is `wayland`. |
 | **Log all processed texts** | The helper appends each raw selection to `$XDG_RUNTIME_DIR/promf`. You can tail it: `tail -f $XDG_RUNTIME_DIR/promf`. Persistent for the session. |
-|**Testing voluble from CLI**|To test `voluble [-s|-e|-t|-p]` meaningfully from the command line,  `$XDG_RUNTIME_DIR/voluble.tmp` (which is emptied on exit), must be repopulated. |
+|**Testing voluble from CLI**|To test `voluble [-s -e -t -p]` meaningfully from the command line,  `$XDG_RUNTIME_DIR/voluble.tmp` (which is emptied on exit), must be repopulated. |
 
 ---  
 
