@@ -40,7 +40,8 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 
 ---  
 
-<video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width=640/>
+<video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
+</video>
 
 ## Screencasts & Example Media  
 
