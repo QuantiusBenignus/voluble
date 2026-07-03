@@ -42,7 +42,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 
 **"Practice what you preach: A demo of Voluble's features, created by Voluble."**
 As a prelude to the next section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself (pleasse, turn the sound ON):
-<video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
+<video id="codedemo" src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
 </video>
 
 ---
@@ -51,11 +51,11 @@ As a prelude to the next section, this short clip demonstrates Voluble’s capab
 
 | Feature | Description | Screencast |
 |---------|-------------|-----------|
-| **Multilingual `Read-Aloud` on‑the‑fly** | A fictional scene in the Italian Alps – an Italian clerk, a Chinese tourist, a French traveler, an American, and a Russian speak over each other. Voluble detects and switches languages instantly. | 🎞️ **[Multilingual Demo (Italian Alps)](assets/voluble_Alps_autolanguage.mp4)** |
+| **Multilingual `Read-Aloud` on‑the‑fly** | A fictional scene in the Italian Alps – an Italian clerk, a Chinese tourist, a French traveler, an American, and a Russian speak over each other. Voluble detects and switches languages instantly. | <video src="https://github.com/user-attachments/assets/c2322439-e8c8-456a-9d5a-6a6bd1729c64" width="640" height="auto" controls>🎞️ Multilingual Demo (Italian Alps)</video>|
 | **Summarise Chinese newspaper** | Select a paragraph from a Chinese newspaper, press *`Voluble → Summarise`*. The LLM returns an English summary which is spoken. | 🎞️ **[Summarise Chinese → English](assets/voluble_summary_crosslingua.mp4)** |
 | **Translate to French** | Highlight a Spanish paragraph, press *`Voluble → Translate`*. The result is spoken in French. | 🎞️ **[Translate Spanish → French](assets/voluble_translate_fr.mp4)** |
-| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Code snippet](assets/voluble_code_explain.mp4)** |
-| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | 🎞️ **[Proofread Text](assets/voluble_proofread.mp4)** |
+| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Code snippet](#codedemo)** |
+| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | <video src="https://github.com/user-attachments/assets/27892d3a-bc7c-47d3-a4e7-4c080b186f59" controls>🎞️ Proofread Text</video> |
 | **Joplin‑Today integration** | At login, the script reads a summary of today’s Joplin tasks. |🎞️ **(see video below, section 7 in Advanced Usage)** |
 
 ---  
