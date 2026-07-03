@@ -41,9 +41,11 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 ---  
 
 **"Practice what you preach: A demo of Voluble's features, created by Voluble."**
-As a prelude to the next section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself:
+As a prelude to the next section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself (pleasse, turn the sound ON):
 <video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
 </video>
+
+---
 
 ## Screencasts & Example Media  
 
