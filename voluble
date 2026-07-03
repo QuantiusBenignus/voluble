@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
-# Change the above to bash if needed. Tested on zsh first.
-# Copyright (c) 2025 Quantius Benignus
-# 
+# Do not replace above shebang with bash - things will break
+# Copyright (©) 2025-2026 Quantius Benignus
+#--------------------------------------------------------------------------
 # THE SCRIPT IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -13,87 +13,347 @@
 
 # NAME: voluble
 # PREREQUSITES: 
-#  - piper installation (see https://github.com/rhaspi/piper) 
+#  - piper installation (see https://github.com/rhasspy/piper) 
+#  - optionally, fasttext installed from your system's repository along with a model (e.g. lid.176.bin or similar).
 #  - optionally, a recent version of 'sox' from your system's repositories.
 #  - optionally, a speech dispatcher installation (preinstalled in many distributions)
-#  - recommended, a local LLM engine with a small but capable model (Gemma3-4B) to summarize sellected text
+#  - recommended, a local LLM engine with a small but capable model (Gemma4-E4B) to summarize selected text
 #--------------------------------------------------------------------------
 
-#---USER CONFIGURATION BLOCK----------------------------------------------------------------------
-#Please, adjust the variables here to suit your environment:
-#Set to 1 to use sox instead of alsa play (for whatever reason):
-use_sox=0
-#Set to 1 to use speech dispatcher integration of Piper (as per instructions at https://github.com/QuantiusBenignus/voluble):
-use_spd=0
-#If the above is set to 0, piper will be called directly with the voice specified below.
-# Choose the default piper voice (and language) for voluble to use for notifications:
-pvoice="$HOME/AI/Models/piper/en_US-lessac-low.onnx"
-#If you have a local LLM inference engine (llama.cpp, llamafile etc.) you can set it up to summarize selected text and then Voluble will read the summary to you.
-#LLModel="$HOME/AI/Models/gemma-3-4b-it-Q6_K_L.gguf"
-#If not set to empty string:
-LLModel=""
-#The command to call for LLM inference (must be in the PATH, or specify a full path to it):
-llam="$HOME/FULL/PATH/TO/llama-cli"
-#IMPORTANT: If you use another inference engine, check the invocation on line 71 and adjust the command line parameters as needed.
-#---END USER CONFIG BLOCK------------------------------------------------------------------------
+#FOR CONFIGUIRATION, edit the ---USER CONFIGURATION BLOCK--- in main() (~line 125+ )
+#Helper functions follow:
+depends () {
+    # Note: Variables local to main are accessible because depends is called from inside main
+    if (( use_sox )); then
+        command -v sox &>/dev/null || { echo "sox is required. Please, install sox" >&2 ; exit 1 ; }
+    fi
+    if (( use_spd )); then
+        command -v spd-say &>/dev/null || { echo "You have selected to use speech dispatcher. Please, install it and set up to call piper." >&2 ; exit 1 ; }
+    fi
+    command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see https://github.com/rhasspy/piper/releases)\nand create 'piper' in your PATH..." >&2 ; exit 1 ; }
+    
+    command -v jq &>/dev/null || { echo -e "Please, install jq to be able to communicate with your LLM server." >&2 ; exit 1 ; }
+        
+    gnome-extensions list | grep -q 'voluble' &>/dev/null || { echo "This script is made to work with voluble (GNOME shell extension)." >&2 ; exit 1 ; }
+    
+    if [[ -n $LLModel ]]; then
+        # Checking for the symlink 'llam' as per your requirement
+        command -v llama-completion &>/dev/null || { echo -e "A llama.cpp installation with 'llama-completion' in the \$PATH is expected." >&2 ; exit 1 ; }
+    fi
+    if (( use_fasttext )); then
+        command -v fasttext &>/dev/null || { echo "fasttext is required for multilingual support. e.g. 'apt install fasttext' " >&2 ; exit 1 ; }
+    fi
+    if [[ "$wm" == "wayland" ]]; then
+        command -v wl-copy &>/dev/null || { echo "wl-clipboard is required for proofreading in Wayland." >&2 ; exit 1 ; }
+    else
+        command -v xsel &>/dev/null || { echo "xsel is required for proofreading in X11." >&2 ; exit 1 ; }
+    fi
 
-#---CHECK DEPENDENCIES. This block can be commented out once dependencies confirmed-----------------------------------
-if [[ use_sox == 1 ]]; then
- command -v sox &>/dev/null || { echo "sox is required. Please, install sox" >&2 ; exit 1 ; }
-fi
-if [[ use_spd == 1 ]]; then
- command -v spd-say &>/dev/null || { echo "You have selected to use speech dispatcher. Please, install it and set up to call piper." >&2 ; exit 1 ; }
-fi
-command -v piper &>/dev/null || { echo -e "Please, install the piper binary (see https://github.com/rhasspy/piper/releases)\
-\nand create 'piper' in your PATH as a symbolic link to the executable, e.g.\n \
-'ln -s /full/path/to/piper/piper \$HOME/.local/bin/piper'" >&2 ; exit 1 ; }
-gnome-extensions list | grep 'voluble' &>/dev/null || { echo "This \
-script is made to work with voluble (GNOME shell extension). Please, install it from https://extensions.gnome.org/extension/6849/voluble/" >&2 ; exit 1 ; }
-if [[ -n LLModel ]]; then
- command -v llam &>/dev/null || { echo -e "A symbolic link 'llam' that resolves to an LLM inference engine, is required.\n Please, install such\
-     and adjust the command line parameters in the relevant section of voluble." >&2 ; exit 1 ; }
-fi
-#---END CHECK DEPENDENCIES. The above block can be commented out after successful 1st run----------------------------
+    echo "All dependencies seem to be available. You can now comment the call to depends() in main()."
+}
 
-#Decide on sample rate, based on model choice:
-if [ "$pvoice" = "${pvoice%low*}" ]; then
-    srate=22050  # low not found
-else
-    srate=16000  # Substring 'low' found
-fi
+#Auto-assign language for text to be spoken, uses fasttext.
+speak_multilingual() {
+    local text="$1"
+    [[ -z "$text" ]] && return
+    local NL=$'\n'
+    local -A missing_flagged
+    local norm="${text//(. |\? |。|：|！|: |; |\! )/$NL}"
+    norm="${(F)${(f)norm}}"
+    local -a chunks=(${(f)norm})
+    (( #chunks )) || return
+    local preds_full=$(print -r -- "$norm" | fasttext predict "$lid_model" - 1 2>/dev/null )
+    local -a preds_arr=("${(f)preds_full}")
+    local current_iso="$LCLANG[$lang]"
+    local current_model="$PIPERDIR/${TTSM[$lang]}"
+    local current_srate="$srate"
+    local -a segment=()
 
-if [ -e "$XDG_RUNTIME_DIR/voluble.tmp" ]; then
-    data=$(cat "$XDG_RUNTIME_DIR/voluble.tmp")
-    if [ $# -gt 0 ]; then
-        if [[ $1 == -s ]]; then
-            if [[ -n LLModel ]]; then
-                #Sending data to LLM for summarization (Please, adjust command line to match your inference engine syntax):
-                summary=$($llam -t 8 --temp 0 --top-p 0.95 -mli --no-mmap --mlock --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 -m $LLModel 2>/dev/null \
-                -p "<start_of_turn>user\nYou are Gemma3. You are helpful assistant who is great at summarizing text. Summarize the following to a sufficient minimum:\n${data}<end_of_turn>\n<start_of_turn>model" )
-                summary="${summary//\*/}"
-                data="${summary/\[end of text\]}"
-                #Store as an LLM prompt for subsequent ingestion by [Zshelf](https://github.com/QuantiusBenignus/Zshelf)
-                echo "$data" >> /dev/shm/promf
-                #and even place it in the clipboard for pasting (requires xsel: `apt install xsel`):
-                #echo "$data" | xsel -ib
-            else
-                data="Your local LLM summarizer is not set up. Please, set it up in Voluble."
+    # Helper to flush segment to Piper
+    flush_segment() {
+        (( #segment )) || return
+        printf '%s\n' "${segment[@]}" | piper --model "$current_model" --length_scale 0.9 --sentence_silence 0.1 --output-raw 2>/dev/null | aplay -r "$current_srate" -f S16_LE -c 1 2>/dev/null
+        segment=()
+    }
+
+    # Helper to fetch model path and sample rate
+    get_model_info() {
+        local lbl="$1"
+        local lang_name="${LCLANG[$lbl]}"
+        local model_file="${TTSM[$lang_name]}"
+        local full_path="$PIPERDIR/$model_file"
+        if [[ -z "$model_file" || ! -f "$full_path" ]]; then
+            echo "MISSING"
+            return
+        fi
+        [[ "$full_path" == *low* ]] && echo "$full_path 16000" || echo "$full_path 22050"
+    }
+
+    for (( i = 1; i <= ${#chunks} ; i++ )); do
+        local chunk="${chunks[i]}"
+        local pred="${preds_arr[i]}"
+        local label="${pred#__label__}"
+        [[ -z "$label" ]] && label="$lang"
+        local info=$(get_model_info "$label")
+        if [[ "$info" == "MISSING" ]]; then
+            (( #segment )) && flush_segment
+            if [[ -z ${missing_flagged[$label]} ]]; then
+                local acron="$label[1]:u.$label[2]:u.$label[3]:u${label[3]:+.}"
+                local error_msg="${msg_missing_model//xlcx/$acron}"
+                printf '%s\n' "$error_msg" | piper --model "$PIPERDIR/${TTSM[$lang]}" --output-raw 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null
+                missing_flagged[$label]=1
             fi
+            current_iso=""
+            continue
+        fi
+        local m_path="${info% *}"
+        local m_rate="${info##* }"
+        # If language changes, flush the current audio segment
+        if [[ -n "$current_iso" && "$label" != "$current_iso" ]]; then
+            flush_segment
+        fi
+        current_iso="$label"
+        current_model="$m_path"
+        current_srate="$m_rate"
+        segment+=("$chunk")
+    done
+    flush_segment
+}
+
+main () {
+    # AFTER SETUP, COMMENT NEXT LINE TO AVOID DEPENDENCY CHECKS ON EACH RUN:
+    #depends
+
+    #---USER CONFIGURATION BLOCK----------------------------------------------------------------------
+    local use_sox=0
+    local use_spd=0
+    local use_fasttext=1
+    # Setup model directories (adjust as needed):
+    local MODELDIR="$HOME/AI/Models"
+    local PIPERDIR="$MODELDIR/Piper"
+    # Add or remove languages and models as needed in the next 2 arrays (must edit both)
+    # Assoc. array with languages for the LLM (To use Brittish English, rename key and mask English) 
+    typeset -A TTSM=(
+    ["Arabic"]="ar_JO-kareem-medium.onnx"
+    ["Bulgarian"]="bg_BG-dimitar-medium.onnx"
+    ["Czech"]="cs_CZ-jirka-medium.onnx"
+    ["German"]="de_DE-thorsten_emotional-medium.onnx"
+    ["Greek"]="el_GR-rapunzelina-medium.onnx"
+    ["Brittish English"]="en_GB-alan-medium.onnx"
+    ["English"]="en_US-lessac-medium.onnx"
+    ["Spanish"]="es_ES-davefx-medium.onnx"
+    ["Farsi"]="fa_IR-reza_ibrahim-medium.onnx"
+    ["Finnish"]="fi_FI-harri-medium.onnx"
+    ["French"]="fr_FR-siwis-medium.onnx"
+    ["Hindi"]="hi_IN-pratham-medium.onnx"
+    ["Italian"]="it_IT-paola-medium.onnx"
+    ["Dutch"]="nl_NL-mls-medium.onnx"
+    ["Romanian"]="ro_RO-mihai-medium.onnx"
+    ["Russian"]="ru_RU-ruslan-medium.onnx"
+    ["Swedish"]="sv_SE-nst-medium.onnx"
+    ["Turkish"]="tr_TR-dfki-medium.onnx"
+    ["Chinese"]="zh_CN-huayan-medium.onnx"
+    )
+    # --- LCLANG: reverse mapping (ISO → TTSM key, only one 'en' for either Brittish or US English) ---
+    typeset -A LCLANG=(
+        ["ar"]="Arabic"
+        ["bg"]="Bulgarian"
+        ["cs"]="Czech"
+        ["de"]="German"
+        ["el"]="Greek"
+        ["en"]="English"
+        ["es"]="Spanish"
+        ["fa"]="Farsi"
+        ["fi"]="Finnish"
+        ["fr"]="French"
+        ["hi"]="Hindi"
+        ["it"]="Italian"
+        ["nl"]="Dutch"
+        ["ro"]="Romanian"
+        ["ru"]="Russian"
+        ["sv"]="Swedish"
+        ["tr"]="Turkish"
+        ["zh"]="Chinese"
+    )
+    local lang="English"
+    #Adjust the next to your language if you changed the language above:
+    local lc="${(k)LCLANG[(r)$lang]}"
+    #For the targeted translate tool:
+    local trans_lang='French'
+    local msg_missing_model='Sorry, skipping this section. No model available for language code xlcx.'
+    #local pipermodel="$MODELDIR/Piper/en_US-amy-medium.onnx"
+    #The next is a good choice for a fast and capable enough local LLM that can be loaded on demand.
+    local LLModel="$MODELDIR/gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf"
+    #The language id model for fattext. See https://fasttext.cc/docs/en/language-identification.html for example.
+    #The following model is distributed under the Creative Commons Attribution-Share-Alike License 3.0.
+    local lid_model="${FASTTEXT_MODEL:-$MODELDIR/Piper/lid.176.bin}"
+    #Adjust the executable and parameters for local inference. Llama.cpp (https://github.com/ggml-org) installed and used here:
+    local llam="llama-completion"
+    local llamargs=(-t 7 --temp 0.6 --top-p 0.95 --min-p 0.0 -mli --no-display-prompt --no-perf --no-warmup -no-cnv -c 8192 -ngl 99 --no-mmap --mlock --jinja -rea off --simple-io)
+    local LLM_SERVER="http://localhost:8080"
+    #And for a touch of fun (spoken when task sent to LLM - choose your own):
+    commitments=(
+    "OK, I am on it."
+    "Ai vostri ordini, procedo."
+    "Je m'en occupe à l'instant."
+    "Hallediyorum."
+    "Inmediatamente."
+    "मैं देख रही हूँ।"
+    "Приступаю к выполнению."
+    "Веднага се заемам с това."
+    "没问题，我来弄。"
+    "Das wird erledigt."
+    "Το αναλαμβάνω."
+    "Consider it done."
+    "Sure. Just a second."
+    "马上就好。"
+    "Aspetta un attimo"
+    "我马上行动。"
+)
+    #---END USER CONFIGURATION BLOCK----------------------------------------------------------------------------------
+
+    local srate piperargs input_file data summary sys_prompt
+    local tlit='%D{%H:%M:%S}'
+    local wm="${XDG_SESSION_TYPE:-${${WAYLAND_DISPLAY+wayland}:-${DISPLAY+x11}}}"
+    local -a pasteit
+    [[ "$wm" == "wayland" ]] && pasteit=(wl-copy) || pasteit=(xsel -ib)
+
+    # Configure Piper arguments
+    if [[ -n $pipermodel ]]; then
+        [[ $pipermodel == *low* ]] && srate=16000 || srate=22050
+        piperargs=(--model "$pipermodel" --length_scale 0.9 --sentence_silence 0.1 --output-raw)
+    else
+        piperargs=(--model "$PIPERDIR/${TTSM[$lang]}" --length_scale 0.9 --sentence_silence 0.1 --output-raw)
+        [[ "$PIPERDIR/${TTSM[$lang]}" == *low* ]] && srate=16000 || srate=22050
+    fi
+    
+    # STALENESS GUARD
+    input_file=$XDG_RUNTIME_DIR/voluble.tmp
+    if [[ -s $input_file ]]; then
+        data=$(<"${input_file}")
+        printf '%s\n---%s---\n' "$data" "${(%)tlit}" >> "$XDG_RUNTIME_DIR/promf"
+        if (( $# )); then
+            # --- LLM PROCESSING MODE (Summary, Translate, Explain) ---
+            case $1 in
+                 -s)
+                    sys_prompt="You are an expert researcher. Provide a concise, one-paragraph summary in $lang. Speak in a natural, flowing style. Do not use bullet points, bold text, or headers. Ensure the summary is easy to listen to in a single take." 
+                    data="Summarize this text for an audio briefing in $lang: $data"
+                   ;;
+                 -t)
+                    sys_prompt="You are a professional translator. Translate the text into $trans_lang. Maintain the original tone and nuance. Do not include any introductory remarks like 'Here is the translation' or 'Translated text'. Output only the translated content."
+                    data="Translate this text into $trans_lang: $data"
+                    piperargs=(--model "$PIPERDIR/${TTSM[$trans_lang]}" --output-raw)
+                   ;;
+                 -e)
+                    sys_prompt="You are a Subject Matter Expert. Explain provided texts with clarity and brevity, in a paragraph or two. Use accessible tone. Avoid markdown formatting (no bolding, no bullets). Convey the core logic quickly and briefly."
+                    data="Explain the following from an expert perspective: $data"
+                   ;;
+                 -p)
+                    sys_prompt='You are a precise, concise, and professional proofreader. Your task is to correct the provided text for grammar, spelling, and punctuation while maintaining the original tone, intent and structure.
+                        You must respond exclusively in valid JSON format using the following schema:
+                        {
+                          "correction": "<Corrected Text>",
+                          "brief": "<A paragraph explaining the primary changes made>"
+                        }
+                        
+                        Strictly adhere to the following rules:
+                        1. Do not include any introductory or concluding conversational text.
+                        2. The "correction" field must contain only the fully corrected text, structured approximatelly the same way - new lines, paragraphs, etc.
+                        3. The "brief" field should be a single, natural-sounding sentence or short paragraph describing the improvements for an auditory summary.
+                        4. If the input text is already perfect, return the original text in "correction" and state "No changes were necessary" in "brief".
+                        
+                        Examples:
+                        
+                        Input: "i dont like go to the store, it is to noisy.
+                        There are too many poeple there at this time."
+                        Output:
+                        {
+                          "correction": "I do not like going to the store; it is too noisy.
+                          There are too many people there at this time.",
+                          "brief": "I corrected the capitalization, fixed the verb tense, and replaced the incorrect usage of to with too."
+                        }
+                        
+                        Input: "The quick brown fox jumps over the dog"
+                        Output:
+                        {
+                          "correction": "The quick brown fox jumps over the dog.",
+                          "brief": "No significant changes were required, though I added a period for proper sentence structure."
+                        }'
+                    data="Proofread this text: $data"
+                   ;;
+                 *) 
+                    echo "This script is meant to be used from the Voluble Gnome extension. Invalid argument."
+                    return 1  
+                   ;;
+            esac    
+            # The chosen blurb
+            local blurb=${commitments[(RANDOM % ${#commitments} +1)]}
+            # 1. Try Server First:
+            if curl -s "$LLM_SERVER/health" > /dev/null; then
+                (( use_fasttext )) && speak_multilingual "$blurb" || printf '%s' "Got it!" | piper $piperargs 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null &
+                payload=$(jq -n \
+                    --arg sys "$sys_prompt" \
+                    --arg user "$data" \
+                    '{"messages": [{"role": "system", "content": $sys}, {"role": "user", "content": $user}]}')
+                summary=$(curl -s -X POST "$LLM_SERVER/v1/chat/completions" \
+                    -H "Content-Type: application/json" \
+                    -d "$payload" | jq -r '.choices[0].message.content // ""')
+    
+            # 2. Fallback to llama-completion CLI
+            elif [[ -n $LLModel ]]; then
+                (( use_fasttext )) && speak_multilingual "$blurb" || printf '%s' "Sure, just a second." | piper $piperargs 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null &
+                summary=$($llam $llamargs -m "$LLModel" -sys "$sys_prompt" -p "$data" 2>/dev/null)
+            else 
+                summary="Your local LLM (server or cli instance) is not set up for Voluble."
+            fi
+            if [[ "$1" == "-p" ]]; then
+                # Edge case: If the LLM wraps JSON in markdown blocks, 
+                summary=$(printf '%s' "$summary" | sed 's/```json//g; s/```//g')
+                local corrected_text=$(printf '%s' "$summary" | jq -r '.correction // empty')
+                local correction_brief=$(printf '%s' "$summary" | jq -r '.brief // empty')
+                # 2. Push the clean correction to the clipboard via pasteit
+                if [[ -n $corrected_text ]]; then
+                    corrected_text="${corrected_text//<think>*<\/think>/}"
+                    corrected_text="${corrected_text//\[end of text\]/}"
+                    printf '%s' "$corrected_text" | $pasteit
+                fi
+                # 3. Construct the audio announcement using the brief
+                data="Proofreading complete. You can now paste the corrected text. ${correction_brief}."
+            else
+                # Clean summary
+                summary="${summary//<think>*<\/think>/}"
+                summary="${summary//\*/}"
+                data="${summary//\[end of text\]/}"
+            fi
+            # Speak the processed result (Single Language)
+            #if (( use_spd )); then
+            #    spd-say -w "$data"
+            #elif (( use_sox )); then 
+            #    printf '%s' "$data" | piper $piperargs 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
+            #else
+            #    printf '%s' "$data" | piper $piperargs 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null
+            #fi
+        #else
+        fi
+            # --- RAW TEXT MODE ---
+            if (( use_fasttext )); then
+                speak_multilingual "$data"
+            else
+                # Fallback to single language (English) if LID is disabled
+                printf '%s' "$data" | piper $piperargs 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null
+            fi
+        #fi
+        : > $input_file
+    else
+        data="No text was selected. Please, select text first."
+        if (( use_spd )); then
+            spd-say -w "$data"
+        elif (( use_sox )); then 
+            printf '%s' "$data" | piper $piperargs 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
         else
-            # multiple arguments are ignored
-            data="Invalid argument. $0 works only with the Voluble GNOME shell extension" 
+            printf '%s' "$data" | piper $piperargs 2>/dev/null | aplay -r $srate -f S16_LE -c 1 2>/dev/null
         fi
     fi
-else
-    data="All dependencies are satisfied. You can now use the Voluble GNOME shell extension."
-fi
-# Process data 
-if [ use_spd = 1 ]; then
-    spd-say -w "$data"
-else 
-    if [ use_sox = 1 ]; then 
-        echo "$data" | piper --model $pvoice --output-raw 2>/dev/null | play -q -r $srate -b 16 --encoding signed-integer -t raw - 2>/dev/null
-    else
-        echo "$data" | piper --model $pvoice --output-raw 2>/dev/null | aplay -r $srate -f S16_LE -t raw - 2>/dev/null 
-    fi
-fi
+}
+
+main "$@"
