@@ -45,11 +45,11 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 | Feature | Description | Screencast |
 |---------|-------------|-----------|
 | **Multilingual `Read-Aloud` on‑the‑fly** | A fictional scene in the Italian Alps – an Italian clerk, a Chinese tourist, a French traveler, an American, and a Russian speak over each other. Voluble detects and switches languages instantly. | 🎞️ **[Multilingual Demo (Italian Alps)](assets/voluble_goat_Alps.mp4)** |
-| **Summarise Chinese newspaper** | Select a paragraph from a Chinese newspaper, press *`Voluble → Summarise`*. The LLM returns an English summary which is spoken. | 🎞️ **[Summarise Chinese → English] (assets/voluble_summary_crosslingua.mp4)** |
-| **Translate to French** | Highlight a Spanish paragraph, press *`Voluble → Translate`*. The result is spoken in French. | 🎞️ **[Translate Spanish → French] (assets/voluble_translate_fr.mp4)** |
-| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Code snippet] (assets/voluble_code_explain.mp4)** |
-| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | 🎞️ **[Proofread Text] (assets/voluble_proofread.mp4)** |
-| **Joplin‑Today integration** | At login, the script reads a summary of today’s Joplin tasks. | **(see video below)** |
+| **Summarise Chinese newspaper** | Select a paragraph from a Chinese newspaper, press *`Voluble → Summarise`*. The LLM returns an English summary which is spoken. | 🎞️ **[Summarise Chinese → English](assets/voluble_summary_crosslingua.mp4)** |
+| **Translate to French** | Highlight a Spanish paragraph, press *`Voluble → Translate`*. The result is spoken in French. | 🎞️ **[Translate Spanish → French](assets/voluble_translate_fr.mp4)** |
+| **Explain a technical excerpt** | Select complex text or a snippet of code, press *`Voluble → Elucidate`*. The LLM explains it in plain language. | 🎞️ **[Explain Code snippet](assets/voluble_code_explain.mp4)** |
+| **Proofread edited text** | Highlight a badly‑written paragraph, press *`Voluble → Proofread`*. The corrected text lands in the clipboard, and a brief “I fixed punctuation and grammar...” is spoken. | 🎞️ **[Proofread Text](assets/voluble_proofread.mp4)** |
+| **Joplin‑Today integration** | At login, the script reads a summary of today’s Joplin tasks. |🎞️ **(see video below, section 7 in Advanced Usage)** |
 
 ---  
 
