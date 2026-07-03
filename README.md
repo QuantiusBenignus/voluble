@@ -2,7 +2,7 @@
 
 *Version 2.0 (July 2026)*  
 
-Voluble is a GNOME Shell extension plus a companion helper script that turns desktop notifications, mouse‑selection, or piece of highlighted text into natural‑sounding speech.  It now ships with **multilingual support, on‑the‑fly language switching, local LLM summarisation/translation/explanation, and a proofreading mode**.  
+Voluble is a GNOME Shell extension plus a companion helper script that turns desktop notifications, mouse‑selection, or pieces of highlighted text into natural‑sounding speech.  It now ships with **multilingual support, on‑the‑fly language switching, local LLM summarization/translation/explanation, and a proofreading mode**.  
 
 ---  
 
@@ -25,7 +25,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 | Feature | Description | NEW? |
 |---------|-------------|------|
 | **Human‑like voice for GNOME notifications** | Uses the lightweight neural TTS engine **Piper** for good-quality (for the purpose) speech. | |
-| **Read mouse selection** | Highlight any text on the screen → Voluble reads it aloud, handling well mixed language text that may make larger models stumble. | |
+| **Read mouse selection** | Highlight any text on the screen → Voluble reads it aloud, handling mixed language text that may make larger models stumble. | |
 | **Mute / Unmute** | Toggle voice output without disabling the extension. | |
 | **Do‑Not‑Disturb awareness** | Automatically silences speech when the system DND switch is on. | |
 | **Multilingual, on‑the‑fly language detection** | When `fasttext` is installed, Voluble detects the language of intelligently chunked text and **automatically switches to the appropriate Piper model**. | **YES** |
@@ -43,7 +43,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 ## Screencasts & Example Media  
 
 **"Practice what you preach: A demo of Voluble's features, created by Voluble."**
-To transition smoothly from the previous section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself (pleasse, turn the sound ON):
+To transition smoothly from the previous section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself (please, turn the sound ON):
 <video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
 </video>
 
@@ -223,7 +223,7 @@ wget -O "$HOME/AI/Models/Piper/lid.176.bin" \
 
 The script automatically picks up `$FASTTEXT_MODEL` if you set that environment variable.
 
-###  7. **For users of Joplin. Spoken summary at stratup of the tasks due soon. Uses the optional python script `joplintoday.py`.**
+###  7. **For users of Joplin. Spoken summary at startup of the tasks due soon. Uses the optional python script `joplintoday.py`.**
 One of the many reasons for creating this extension was the need to hear the contents of notifications for appointments and to-do's from the [Joplin](https://joplinapp.org) note-taking app. A video [demonstration](./joplin-example.md).
 
 Notification - Tasks in the next 12 hrs | Notification Audio 
@@ -253,7 +253,7 @@ Name=JoplinToday
 | **Create an alias** | `alias shutup='pkill -SIGINT voluble && pkill play || pkill aplay'` |
 | **Add a custom commitment** | Edit the `commitments` array – any line will be spoken before the LLM runs. Only registered languages. |
 | **Debug dependencies** | Run `voluble` (no flags) from a terminal; you’ll catch any dependency issues. |
-| **Disable dependency check**| After setup is complete, comment out the `depends` function call at the beggining of main() to avoid the check on each run.|
+| **Disable dependency check**| After setup is complete, comment out the `depends` function call at the beginning of main() to avoid the check on each run.|
 | **Change sample rate** (for custom low‑quality models) | Should be handled automatically by the script |
 | **Use Wayland clipboard** | The script automatically picks `wl-copy` when `$XDG_SESSION_TYPE` is `wayland`. |
 | **Log all processed texts** | The helper appends each raw selection to `$XDG_RUNTIME_DIR/promf`. You can tail it: `tail -f $XDG_RUNTIME_DIR/promf`. Persistent for the session. |
@@ -292,7 +292,7 @@ With espeak-ng | With Piper
 
 - Configuration files (speechd.conf) are located in /etc/speech-dispatcher/ for system-wide settings and ~/.config/speech-dispatcher/ for per-user preferences.
 - The `spd-conf` tool allows one to modify configuration options interactively or create per-user speech dispatcher configuration.
-- Integration with synthesizers (TTS engines)  is done via module configuration, but unfortunatelly, the supplied preconfigured modules sound unnatural, robotic and not quite intelligible.
+- Integration with synthesizers (TTS engines)  is done via module configuration, but unfortunately, the supplied preconfigured modules sound unnatural, robotic and not quite intelligible.
 - It is possible, with some work, to configure Piper as a TTS module for Speech Dispatcher.
 	1. First create a generic local (per user) speech-dispatcher setup with the `spd-conf` tool, using `sd_generic` as the default module.
  	2. Then register Piper as a valid TTS module by editing the just-created `~/.config/speech-dispatcher/speechd.conf`. Most stuff can be left as is (all is well commented). An excerpt of the relevant parameters in my case shown here:
@@ -322,7 +322,7 @@ With espeak-ng | With Piper
  
 	```
 		Debug 0
-		GenericExecuteSynth "printf %s \'$DATA\' | piper --length_scale 1 --sentence_silence 0 --model ~/Store/Models/piper/$VOICE --output-raw | aplay -r 16000 -f S16_LE -t raw -"
+		GenericExecuteSynth "printf %s \'$DATA\' | piper --length_scale 1 --sentence_silence 0 --model ~/AI/Models/piper/$VOICE --output-raw | aplay -r 16000 -f S16_LE -t raw -"
 		# Using low quality voices to respect the 16000 rate for aplay in the command above is perfectly fine.
 		
 		GenericCmdDependency "piper"
@@ -366,15 +366,11 @@ With espeak-ng | With Piper
 
 ---
 
-## Credits & License  
+## Credits  
 
-* **Quantius Benignus** – original author & maintainer (© 2025‑2026)  
 * **Michael Hansen** – Piper author (low‑resource neural TTS)  
 * **GGML‑org** – llama.cpp / LLM inference engine  
 * **FastText** – language identification model  
-
-The code is released under the **MIT License** – see the `LICENSE` file in the repository.  
-
 ---  
 
 *Happy listening! 🎧*  
