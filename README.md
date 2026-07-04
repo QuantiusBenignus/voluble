@@ -16,7 +16,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 6. [Advanced Usage (LLM, FastText, Sox, Speech‑Dispatcher)](#advanced-usage)  
 7. [Tips & Tricks](#tips--tricks)  
 8. [Uninstall / Reset](#uninstall--reset)  
-9. [Credits & License](#credits--license)  
+9. [Credits](#credits--license)  
 
 ---  
 
@@ -35,7 +35,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 | **Proofread and replace** (`voluble -p`) | LLM returns a JSON object with `{ "correction": "...", "brief": "..." }`. The corrected text is copied to the clipboard, and the brief is spoken. | **YES** |
 | **Local server to CLI fallback e.g. `llama‑completion`** | If a server is running on `localhost:8080` the script prefers it; otherwise it falls back to the CLI. | **YES** |
 | **Optional use of `sox` or `spd‑say`** | Choose your audio backend (`aplay`, `play`, `sox`, or Speech‑Dispatcher). | |
-| **Integration with Joplin‑Today script** | (Optional) Summarise today’s Joplin tasks at session start. | |
+| **Anounce Joplin tasks** | (Optional) Summarise today’s Joplin tasks at session start. | |
 | **Extensible “commitments”** | Random, friendly “I’m on it…” messages spoken before the LLM runs. | **YES** |
 
 ---  
@@ -190,7 +190,7 @@ The zsh function `fx` (-p loads the PRIMARY SELECTION), along with its mirror `x
    LCLANG["nl"]="Dutch"
    ```
 
-4. Because the extension has not changed you do not need to **Restart the extension** (`gnome-extensions restart voluble`).
+4. Because the extension has not changed you **do not need to** restart the extension (`gnome-extensions restart voluble`).
 
 ### 4. Custom LLM Server  
 
@@ -249,8 +249,8 @@ Name=JoplinToday
 
 | Tip | Command |
 |-----|---------|
-| **Stop a runaway read** | `pkill -SIGINT voluble && pkill play || pkill aplay`  (or `pkill -SIGINT spd-say`) |
-| **Create an alias** | `alias shutup='pkill -SIGINT voluble && pkill play || pkill aplay'` |
+| **Stop a runaway read** | `pkill -SIGINT voluble && pkill play \|\| pkill aplay  (or pkill -SIGINT spd-say)` |
+| **Create an alias** | `alias shutup='pkill -SIGINT voluble && pkill play \|\| pkill aplay'` |
 | **Add a custom commitment** | Edit the `commitments` array – any line will be spoken before the LLM runs. Only registered languages. |
 | **Debug dependencies** | Run `voluble` (no flags) from a terminal; you’ll catch any dependency issues. |
 | **Disable dependency check**| After setup is complete, comment out the `depends` function call at the beginning of main() to avoid the check on each run.|
