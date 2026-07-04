@@ -42,7 +42,7 @@ Voluble is a GNOME Shell extension plus a companion helper script that turns d
 
 ## Screencasts & Example Media  
 
-**"Practice what you preach: A demo of Voluble's features, created by Voluble."**
+**"Practice what you preach: A demo of Voluble's features, narrated by Voluble."**
 To transition smoothly from the previous section, this short clip demonstrates Voluble’s capabilities by using one of its core features to explain the project itself (please, turn the sound ON):
 <video src="https://github.com/user-attachments/assets/f4081fa6-818b-4f49-9118-5e44958efdc6" width="640" height="auto" controls>
 </video>
@@ -111,7 +111,7 @@ To transition smoothly from the previous section, this short clip demonstrates V
    ```
 5. **Set up a local LLM to use the AI features:** Download [llama.cpp](https://github.com/ggml-org/llama.cpp) (or any other inference engine that exposes a OpenAI-compatible API, or can be run in a single-shot mode from the command line - e.g. [llamafile](https://github.com/Mozilla-Ocho/llamafile) )
 6. **Edit the USER CONFIGURATION BLOCK** (see next section).
-7. **Run the extension script (no flags) from the command line to check the dependencies:** `$>voluble`
+7. **Run the extension script (no arguments) from the command line to verify dependencies:** `$>voluble`
 8. **Restart GNOME** (log out/in or press `Alt+F2`, type `r`, press **Enter**) and test the extension by clicking **“Read Aloud”** in the Voluble menu.  
 
 ---  
