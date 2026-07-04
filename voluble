@@ -122,7 +122,7 @@ speak_multilingual() {
 
 main () {
     # AFTER SETUP, COMMENT NEXT LINE TO AVOID DEPENDENCY CHECKS ON EACH RUN:
-    #depends
+    depends
 
     #---USER CONFIGURATION BLOCK----------------------------------------------------------------------
     local use_sox=0
@@ -184,7 +184,7 @@ main () {
     #local pipermodel="$MODELDIR/Piper/en_US-amy-medium.onnx"
     #The next is a good choice for a fast and capable enough local LLM that can be loaded on demand.
     local LLModel="$MODELDIR/gemma-4-E4B-it-qat-UD-Q4_K_XL.gguf"
-    #The language id model for fattext. See https://fasttext.cc/docs/en/language-identification.html for example.
+    #The language id model for fasttext. See https://fasttext.cc/docs/en/language-identification.html for example.
     #The following model is distributed under the Creative Commons Attribution-Share-Alike License 3.0.
     local lid_model="${FASTTEXT_MODEL:-$MODELDIR/Piper/lid.176.bin}"
     #Adjust the executable and parameters for local inference. Llama.cpp (https://github.com/ggml-org) installed and used here:
