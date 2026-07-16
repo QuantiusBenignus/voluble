@@ -58,8 +58,14 @@ speak_multilingual() {
     [[ -z "$text" ]] && return
     local NL=$'\n'
     local -A missing_flagged
-    local norm="${text//(. |\? |。|：|！|: |; |\! )/$NL}"
-    norm="${(F)${(f)norm}}"
+    #simple is good# local norm="${text//(. |\? |。|：|！|: |; |\! )/$NL}"
+    #For a few 100s of microseconds:
+    setopt local_options extended_glob
+    text="${text//(#m)(. |\? |。|：|！|: |; |\! |；| “|” | ‘|’ |… )/$MATCH$NL}"
+    text="${text//(#b)([$NL ][^$NL ](#c1,4)[.:’”] )$NL/$match[1]}"
+    text="${text//(#b)$NL([^$NL ](#c1,4)[’”] )/$match[1]}"
+    local norm="${text//$NL([[:space:]]#)$NL/$NL}"
+    #norm="${(F)${(f)norm}}"
     local -a chunks=(${(f)norm})
     (( #chunks )) || return
     local preds_full=$(print -r -- "$norm" | fasttext predict "$lid_model" - 1 2>/dev/null )
